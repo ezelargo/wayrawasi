@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using WayraWasi.Models;
 
 namespace WayraWasi.Data
 {
@@ -9,5 +10,7 @@ namespace WayraWasi.Data
             : base(options)
         {
         }
+        public DbSet<Cabania> Cabanias { get; set; }
+        public DbSet<Reserva> Reservaciones { get; set; }
     }
 }
