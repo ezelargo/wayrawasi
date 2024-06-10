@@ -1,0 +1,54 @@
+﻿@model WayraWasi.Models.Cabania
+
+@{
+    ViewBag.Title = "Eliminar Cabaña";
+}
+
+<h2>Eliminar Cabaña</h2>
+
+<h3>¿Está seguro de que desea eliminar esta cabaña?</h3>
+<div>
+    <h4>Cabaña</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.NombreCabania)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.NombreCabania)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Descripcion)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Descripcion)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Capacidad)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Capacidad)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.PrecioNoche)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PrecioNoche)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Disponible)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Disponible)
+        </dd>
+    </dl>
+
+    @using (Html.BeginForm("DeleteConfirmation", "Cabanias", new { id = Model.IdCabania}, FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-actions no-color">
+            <input type="submit" value="Eliminar" class="btn btn-danger" /> |
+            <a href="@Url.Action("Index")" class="btn btn-primary">Volver a la Lista</a>
+        </div>
+    }
+</div>

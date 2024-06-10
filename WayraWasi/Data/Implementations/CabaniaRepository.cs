@@ -5,7 +5,7 @@ using Dapper;
 
 namespace WayraWasi.Data.Implementations
 {
-    public class CabaniaRepository : IGenericRepository<Cabania, int>
+    public class CabaniaRepository : IGenericRepository<Cabania>
     {
         private readonly DBDapperContext _conexionDapper;
 
@@ -17,7 +17,7 @@ namespace WayraWasi.Data.Implementations
         {
             using (var conexionD = _conexionDapper.GetConnection())
             {
-                return await conexionD.QueryFirstOrDefaultAsync<Cabania>("SELECT * FROM Cabanias WHERE IdCabania = @IdCabania", new { Id = id });
+                return await conexionD.QueryFirstOrDefaultAsync<Cabania>("SELECT * FROM Cabanias WHERE IdCabania = @Id ", new { Id = id });
             }
         }
 
@@ -31,9 +31,16 @@ namespace WayraWasi.Data.Implementations
 
         public async Task<int> Crear(Cabania modelo)
         {
-            using (var conexionD = _conexionDapper.GetConnection())
+            try
             {
-                return await conexionD.ExecuteAsync("INSERT INTO Cabanias (NombreCabania, Descripcion, Capacidad, PrecioNoche) VALUES (@NombreCabania, @Descripcion, @Capacidad, @PrecioNoche)", modelo);
+                using (var conexionD = _conexionDapper.GetConnection())
+                {
+                    return await conexionD.ExecuteAsync("INSERT INTO Cabanias (NombreCabania, Descripcion, Capacidad, PrecioNoche, Disponible) VALUES (@NombreCabania, @Descripcion, @Capacidad, @PrecioNoche, 1)", modelo);
+                }
+            }
+            catch (Exception ex) { 
+                Console.WriteLine(ex.ToString());
+                throw;
             }
         }
 
@@ -41,7 +48,7 @@ namespace WayraWasi.Data.Implementations
         {
             using (var conexionD = _conexionDapper.GetConnection())
             {
-                return await conexionD.ExecuteAsync("UPDATE Cabanias SET NombreCabania = @NombreCabania, Descripcion = @Descripcion, Capacidad = @Capacidad, PrecioNoche = @PrecioNoche WHERE IdCabania = @IdCabania", modelo);
+                return await conexionD.ExecuteAsync("UPDATE Cabanias SET NombreCabania = @NombreCabania, Descripcion = @Descripcion, Capacidad = @Capacidad, PrecioNoche = @PrecioNoche, Disponible = @Disponible WHERE IdCabania = @IdCabania", modelo);
             }
         }
 
@@ -49,7 +56,7 @@ namespace WayraWasi.Data.Implementations
         {
             using (var conexionD = _conexionDapper.GetConnection())
             {
-                return await conexionD.ExecuteAsync("DELETE FROM Cabanias WHERE IdCabania = @IdCabania", new { Id = id });
+                return await conexionD.ExecuteAsync("DELETE FROM Cabanias WHERE IdCabania = @Id", new { Id = id });
             }
         }
     }

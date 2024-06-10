@@ -1,29 +1,24 @@
-﻿using System.Data.SqlClient;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using System.Data;
+using System.Data.SqlClient;
 
 namespace WayraWasi.Data
 {
-    public class DBDapperContext
+    public class DBDapperContext : IdentityDbContext
     {
-        private readonly string _dbConnectionString;
+        private readonly string _connectionDapper;
 
-        public DBDapperContext(string dbConnectionString)
+        //No es necesario conectarlo al program para que funcione
+        public DBDapperContext(string connectionDapper)
         {
-            _dbConnectionString = dbConnectionString;
+            _connectionDapper = connectionDapper;
         }
-
-        public SqlConnection GetConnection() // Crea una nueva conexión a la base de datos por cada solicitud HTTP, y evita compartir conexiones con otras solicitudes.
-        {
-            try
-            {
-                var conexion = new SqlConnection(_dbConnectionString);
-                conexion.Open();
-                return conexion;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error al abrir la conexión: {ex.Message}");
-                throw;
-            }
+        // Crea una nueva conexión a la base de datos por cada solicitud HTTP, y evita compartir conexiones con otras solicitudes.
+        public IDbConnection GetConnection(){
+            var connection = new SqlConnection(_connectionDapper);
+            connection.Open();
+            return connection;
         }
     }
 }

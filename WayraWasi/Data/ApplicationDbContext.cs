@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
+using System.Data.SqlClient;
 using WayraWasi.Models;
 
 namespace WayraWasi.Data
@@ -12,5 +14,6 @@ namespace WayraWasi.Data
         }
         public DbSet<Cabania> Cabanias { get; set; }
         public DbSet<Reserva> Reservaciones { get; set; }
+
     }
 }

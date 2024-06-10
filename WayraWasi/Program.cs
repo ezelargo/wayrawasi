@@ -1,9 +1,12 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using System.Data;
 using WayraWasi.Data;
 using WayraWasi.Data.Implementations;
+using WayraWasi.Models;
 
 namespace WayraWasi
 {
@@ -14,23 +17,18 @@ namespace WayraWasi
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-               .AddEntityFrameworkStores<ApplicationDbContext>();
-
-            var connectionString = builder.Configuration.GetConnectionString("DBConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-
-            builder.Services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DBConnection")));
+               .AddEntityFrameworkStores<DBDapperContext>()
+               .AddDefaultTokenProviders();
 
             builder.Services.AddScoped<DBDapperContext>(provider =>
             {
-                return new DBDapperContext(builder.Configuration.GetConnectionString("DBConnection"));
+                var connectionDapper = builder.Configuration.GetConnectionString("DBConnection");
+                return new DBDapperContext(connectionDapper);
             });
 
-
-
-            
-
             builder.Services.AddScoped<IHomeRepository, HomeRepository>();
+            builder.Services.AddScoped<ReservaRepository>();
+            builder.Services.AddScoped<CabaniaRepository>();
 
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 

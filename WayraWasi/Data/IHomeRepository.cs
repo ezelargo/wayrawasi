@@ -6,6 +6,6 @@ namespace WayraWasi.Data
     {
         Task<IEnumerable<Reserva>> ListarDisponibilidadPorFecha(DateTime fechaInicio, DateTime fechaFin);
 
-        Task<IEnumerable<Reserva>> GenerarReservaPorFecha(DateTime fechaInicio, DateTime fechaFin);
+        //Task<IEnumerable<Reserva>> GenerarReservaPorFecha(DateTime fechaInicio, DateTime fechaFin);
     }
 }

@@ -1,0 +1,47 @@
+﻿@model WayraWasi.Models.Reserva
+@{
+    ViewBag.Title = "Detalles de Reservación";
+}
+
+<h2>Detalles de Reservación</h2>
+
+<div>
+    <h4>Reservación</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.NombreCliente)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.NombreCliente)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.FechaEntrada)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.FechaEntrada)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.FechaSalida)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.FechaSalida)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.NumeroPersonas)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.NumeroPersonas)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.IdCabania)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.IdCabania)
+        </dd>
+    </dl>
+</div>
+<p>
+    <a href="@Url.Action("Edit", new { id = Model.IdReservacion })" class="btn btn-warning">Editar</a>
+    <a href="@Url.Action("Index")" class="btn btn-primary">Volver a la Lista</a>
+</p>

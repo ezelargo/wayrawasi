@@ -1,0 +1,31 @@
+﻿@model IEnumerable<WayraWasi.Models.Reserva>
+
+@{
+    ViewBag.Title = "Reporte de Reservas";
+}
+
+<h2>Reporte de Reservas</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Nombre del Cliente</th>
+            <th>Fecha de Entrada</th>
+            <th>Fecha de Salida</th>
+            <th>Número de Personas</th>
+            <th>Cabaña Asignada</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var reserva in Model)
+        {
+            <tr>
+                <td>@reserva.NombreCliente</td>
+                <td>@reserva.FechaEntrada.ToString()</td>
+                <td>@reserva.FechaSalida.ToString()</td>
+                <td>@reserva.NumeroPersonas</td>
+                <td>@reserva.IdCabania</td>
+            </tr>
+        }
+    </tbody>
+</table>

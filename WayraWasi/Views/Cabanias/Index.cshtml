@@ -1,0 +1,40 @@
+﻿@model IEnumerable<WayraWasi.Models.Cabania>
+
+@{
+    ViewBag.Title = "Listado de Cabañas";
+}
+
+<h2>Listado de Cabañas</h2>
+
+<p>
+    <a href="@Url.Action("Create")" class="btn btn-primary">Crear Nueva Cabaña</a>
+</p>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Nombre de la cabaña</th>
+            <th>Descripcion</th>
+            <th>Capacidad</th>
+            <th>Precio por noche</th>
+            <th>Disponible</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.NombreCabania)</td>
+                <td>@Html.DisplayFor(modelItem => item.Descripcion)</td>
+                <td>@Html.DisplayFor(modelItem => item.Capacidad)</td>
+                <td>@Html.DisplayFor(modelItem => item.PrecioNoche)</td>
+                <td>@Html.DisplayFor(modelItem => item.Disponible)</td>
+                <td>
+                    <a href="@Url.Action("Edit", new { id = item.IdCabania })" class="btn btn-warning">Editar</a>
+                    <a href="@Url.Action("Details", new { id = item.IdCabania })" class="btn btn-info">Detalles</a>
+                    <a href="@Url.Action("Delete", new { id = item.IdCabania })" class="btn btn-danger">Eliminar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

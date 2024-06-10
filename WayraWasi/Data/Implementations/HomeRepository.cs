@@ -18,21 +18,19 @@ namespace WayraWasi.Data.Implementations
         {
             using (var conexionD = _conexionDapper.GetConnection())
             {
-                var parametros = new DynamicParameters();
-                parametros.Add("@FechaEntrada", fechaInicio, DbType.Int32);
-                parametros.Add("@FechaSalida", fechaFin, DbType.Int32);
-                return await conexionD.QueryAsync<Reserva>("ListarDisponibilidadPorFecha", parametros, commandType: CommandType.StoredProcedure);
+                return await conexionD.QueryAsync<Reserva>("" +
+                    "SELECT Cabanias.NombreCabania, FechaEntrada, FechaSalida, Cabanias.Disponible FROM Reservaciones INNER JOIN Cabanias ON Cabanias.IdCabania = Reservaciones.IdCabania"
+                    , new { FechaEntrada = fechaInicio, FechaSalida = fechaFin }); // Esta es la forma por la cual Dapper ingresa valores de busqueda para SQL
             }
         }
-        public async Task<IEnumerable<Reserva>> GenerarReservaPorFecha(DateTime fechaInicio, DateTime fechaFin)
-        {
-            using (var conexionD = _conexionDapper.GetConnection())
-            {
-                var parametros = new DynamicParameters();
-                parametros.Add("@FechaEntrada", fechaInicio, DbType.Int32);
-                parametros.Add("@FechaSalida", fechaFin, DbType.Int32);
-                return await conexionD.QueryAsync<Reserva>("GenerarReservaPorFecha", parametros, commandType: CommandType.StoredProcedure);
-            }
-        }
+        /* public async Task<IEnumerable<Reserva>> GenerarReservaPorFecha(DateTime fechaInicio, DateTime fechaFin)
+         {
+             using (var conexionD = _conexionDapper.GetConnection())
+             {
+                 return await conexionD.QueryAsync<Reserva>("" +
+                     "SELECT r.NombreCliente, r.FechaEntrada, r.FechaSalida, c.NombreCabania FROM Reservaciones r INNER JOIN Cabanias c ON c.IdCabania = r.IdCabania"
+                     , new { FechaEntrada = fechaInicio, FechaSalida = fechaFin });
+             }
+         }*/
     }
 }
