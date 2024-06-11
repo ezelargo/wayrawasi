@@ -34,7 +34,7 @@ namespace WayraWasi.Data.Implementations
         {
             using (var conexionD = _conexionDapper.GetConnection())
             {
-                return await conexionD.QueryAsync<Reserva>("SELECT * FROM Reservaciones");
+                return await conexionD.QueryAsync<Reserva, Cabania, Reserva>("SELECT * FROM Reservaciones r INNER JOIN Cabanias c ON c.IdCabania = r.IdCabania",(reserva, cabania) => { reserva.Cabania = cabania; return reserva; },splitOn: "IdCabania");
             }
         }
 
@@ -45,21 +45,22 @@ namespace WayraWasi.Data.Implementations
                 return await conexionD.QueryAsync<Cabania>("SELECT * FROM Cabanias");
             }
         }
-
-
-        /* 
-            Funcionamiento: En caso de crear se ve si la cabaña esta ocupada en esas fechas, si no lo esta entonces se asigna la cabaña a la reserva y listo.
-            En caso de editar se toma que la nueva cabaña ya filtrada no tenga otra reserva con la misma fecha o una fecha entre medio(debido a que estara ocuapada)
-            donde si esto se cumple entonces la vieja fecha dejara de estar asignada a la reservacion por lo que automaticamente como una de las condiciones de conexion para
-            este metodo no funciona(INNER JOIN) cuando se quiera asignar una nueva reserva a cabaña en las fechas liberas se podra hacer,
-            mientras que la nueva cabaña ya estara asignada a esa fecha.
-         */
+        
         public async Task<Cabania> BuscarCabaniaDisponibilidad(int id,DateTime? fechaInicio, DateTime? fechaFin)
         {
             using (var conexionD = _conexionDapper.GetConnection())
             {
                 // Esta consulta compara si la fecha de entrada coincide en el rango de fechas entre la entrada o la salida de alguna reserva y lo mismo para la Fecha de Salida. Teniendo asi que ni la entrada ni la salida se solapan con otra reserva.
                 return await conexionD.QueryFirstOrDefaultAsync<Cabania>("SELECT * FROM Cabanias c INNER JOIN Reservaciones r ON r.IdCabania = c.IdCabania WHERE r.FechaEntrada BETWEEN @FechaEntrada AND @FechaSalida OR r.FechaSalida BETWEEN @FechaEntrada AND @FechaSalida", new { FechaEntrada = fechaInicio, FechaSalida = fechaFin });
+            }
+        }
+
+        public async Task<IEnumerable<Reserva>> GenerarReservaPorFecha(DateTime fechaInicio, DateTime fechaFin)
+        {
+            using (var conexionD = _conexionDapper.GetConnection())
+            {
+                return await conexionD.QueryAsync<Reserva>("SELECT * FROM Reservaciones r INNER JOIN Cabanias c ON c.IdCabania = r.IdCabania WHERE r.FechaEntrada BETWEEN @FechaEntrada AND @FechaSalida OR r.FechaSalida BETWEEN @FechaEntrada AND @FechaSalida"
+                    , new { FechaEntrada = fechaInicio, FechaSalida = fechaFin });
             }
         }
 
@@ -93,5 +94,6 @@ namespace WayraWasi.Data.Implementations
                 return await conexionD.ExecuteAsync("DELETE FROM Reservaciones WHERE IdReservacion = @Id", new { Id = id });
             }
         }
+
     }
 }

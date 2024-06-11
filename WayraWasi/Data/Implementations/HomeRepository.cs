@@ -24,14 +24,5 @@ namespace WayraWasi.Data.Implementations
                     , new { FechaEntrada = fechaInicio, FechaSalida = fechaFin }); // Esta es la forma por la cual Dapper ingresa valores de busqueda para SQL
             }
         }
-        /* public async Task<IEnumerable<Reserva>> GenerarReservaPorFecha(DateTime fechaInicio, DateTime fechaFin)
-         {
-             using (var conexionD = _conexionDapper.GetConnection())
-             {
-                 return await conexionD.QueryAsync<Reserva>("" +
-                     "SELECT r.NombreCliente, r.FechaEntrada, r.FechaSalida, c.NombreCabania FROM Reservaciones r INNER JOIN Cabanias c ON c.IdCabania = r.IdCabania"
-                     , new { FechaEntrada = fechaInicio, FechaSalida = fechaFin });
-             }
-         }*/
     }
 }

@@ -1,4 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using iText.Kernel.Pdf;
+using iText.Layout;
+using iText.Layout.Element;
+using iText.Layout.Properties;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using WayraWasi.Data;
 using WayraWasi.Data.Implementations;
@@ -30,6 +34,63 @@ namespace WayraWasi.Controllers
         {
             var reserva = await _repository.BuscadorId(id);
             return View(reserva);
+        }
+
+        public IActionResult GenerarReporteReservas()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> GenerarReporteReservas(DateTime fechaInicio, DateTime fechaFin)
+        {
+            var reserva = await _repository.GenerarReservaPorFecha(fechaInicio, fechaFin);
+
+            var pdf = GenerarReportePDF(reserva);
+
+            return File(pdf, "application/pdf", "Reportes de Reservas.pdf");
+        }
+
+        private byte[] GenerarReportePDF(IEnumerable<Reserva> reservas) // El Byte sirve para representar un archivo PDF en memoria, pudiendo enviarse a una respuesta HTTP para su descarga
+        {
+            using (var stream = new MemoryStream())
+            {
+                if (stream.CanWrite)
+                {
+                    PdfWriter writer = new PdfWriter(stream);
+                    PdfDocument pdf = new PdfDocument(writer);
+                    Document document = new Document(pdf);
+
+
+                    /* Generacion de reportes por PDF */
+                    document.Add(new Paragraph("Reporte de Reservas").SetTextAlignment(TextAlignment.CENTER).SetFontSize(18));
+                    document.Add(new Paragraph($"Desde {DateTime.Now.ToString("yyyy-MM-dd")}").SetTextAlignment(TextAlignment.CENTER).SetFontSize(10));
+                    document.Add(new Paragraph("\n"));                    
+
+                    Table table = new Table(6, true);
+
+                    table.AddHeaderCell("Nombre Cliente");
+                    table.AddHeaderCell("Fecha Entrada");
+                    table.AddHeaderCell("Fecha Salida");
+                    table.AddHeaderCell("Nombre de cabaña");
+                    table.AddHeaderCell("Estado");
+
+                    foreach (var reserva in reservas) // Me imprime una
+                    {
+                        var cabania = _repository.BuscarPorIDCabania(reserva.IdCabania);
+                        table.AddCell(reserva.NombreCliente);
+                        table.AddCell(reserva.FechaEntrada.ToString());
+                        table.AddCell(reserva.FechaSalida.ToString());
+                        table.AddCell(cabania.Result.NombreCabania.ToString());
+                        table.AddCell(reserva.Estado);
+                    }
+
+                    document.Add(table);
+                    document.Close();
+                }
+                return stream.ToArray();
+            }
         }
 
         // GET: ReservasController/Create

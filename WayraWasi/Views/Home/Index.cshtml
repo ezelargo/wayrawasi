@@ -1,32 +1,71 @@
 ﻿@{
-    ViewBag.Title = "Página Principal";
-    ViewData["Title"] = "Página Principal";
+    ViewData["Title"] = "Pagina Principal";
 }
+
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wayra Wasi - Home</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Wayra Wasi </title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-w8fXzGfyTJo4PVr/1s4obH9mQSmSB15VJ6x2Z3QEqf59KlOYtJ5jQdT6lQmUzU8v" crossorigin="anonymous">
 </head>
 <body>
-    <div class="container d-flex flex-column align-items-center justify-content-center mt-5">
-        <h1 class="text-center mb-4">Wayra Wasi - Panel de Administración</h1>
-        <div class="w-100" style="max-width: 400px;">
-            <div class="option-button">
-                <a href="@Url.Action("Index", "Reservas")" class="btn btn-primary btn-block">Gestión de Reservas</a>
-            </div>
-            <div class="option-button">
-                <a href="@Url.Action("Index", "Cabanias")" class="btn btn-primary btn-block">Gestión de Cabañas</a>
-            </div>
-            <div class="option-button">
-                <a href="@Url.Action("Disponibilidad", "Home")" class="btn btn-primary btn-block">Disponibilidad</a>
-            </div>
-            <div class="option-button">
-                <a href="@Url.Action("Reportes", "Home")" class="btn btn-primary btn-block">Reportes</a>
+    <div class="container">
+        <div class="jumbotron mt-4">
+            <h1 class="display-4">Bienvenido a Wayra Wasi!</h1>
+            <p class="lead">Accede rápidamente a las funcionalidades principales.</p>
+            <hr class="my-4">
+            <div class="row">
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h4 class="card-title">Gestión de Reservas</h4>
+                            <p class="card-text">Administra las reservas de cabañas.</p>
+                        </div>
+                        <div class="card-footer">
+                            <a href="/Reservas/Index" class="btn btn-primary">Ir a Reservas</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h4 class="card-title">Gestión de Cabañas</h4>
+                            <p class="card-text">Administra las cabañas disponibles.</p>
+                        </div>
+                        <div class="card-footer">
+                            <a href="/Cabanias/Index" class="btn btn-primary">Ir a Cabañas</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h4 class="card-title">Disponibilidad</h4>
+                            <p class="card-text">Consulta la disponibilidad de cabañas.</p>
+                        </div>
+                        <div class="card-footer">
+                            <a href="/Home/Disponibilidad" class="btn btn-primary">Ver Disponibilidad</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h4 class="card-title">Reportes</h4>
+                            <p class="card-text">Genera reportes de reservas.</p>
+                        </div>
+                        <div class="card-footer">
+                            <a href="/Reservas/GenerarReporteReservas" class="btn btn-primary">Generar Reportes</a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgOSXt6F7bjvCEM0yCbmIVw52H8JoZlB8JGz8d7gmdvF4pAKzz7" crossorigin="anonymous"></script>
 </body>
 </html>

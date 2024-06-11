@@ -23,7 +23,6 @@
             <th>Descripcion</th>
             <th>Capacidad</th>
             <th>Precio por noche</th>
-            <th>Disponible</th>
             <th>Acciones</th>
         </tr>
     </thead>
@@ -35,7 +34,6 @@
                 <td>@Html.DisplayFor(modelItem => item.Descripcion)</td>
                 <td>@Html.DisplayFor(modelItem => item.Capacidad)</td>
                 <td>@Html.DisplayFor(modelItem => item.PrecioNoche)</td>
-                <td>@Html.DisplayFor(modelItem => item.Disponible)</td>
                 <td>
                     <a href="@Url.Action("Edit", new { id = item.IdCabania })" class="btn btn-warning">Editar</a>
                     <a href="@Url.Action("Details", new { id = item.IdCabania })" class="btn btn-info">Detalles</a>

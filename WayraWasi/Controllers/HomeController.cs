@@ -32,19 +32,7 @@ namespace WayraWasi.Controllers
             var disponibilidad = await _homeRepository.ListarDisponibilidadPorFecha(fechaInicio, fechaFin);
             return View(disponibilidad);
         }
-
-       /*public ActionResult Reportes()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public async Task<ActionResult> Reportes(DateTime fechaInicio, DateTime fechaFin)
-        {
-            var disponibilidad = await _homeRepository.GenerarReservaPorFecha(fechaInicio, fechaFin);
-            return View(disponibilidad);
-        }*/
-
+        
         public IActionResult Privacy()
         {
             return View();

@@ -10,6 +10,7 @@ namespace WayraWasi.Data
         Task<IEnumerable<Reserva>> ListarTodos();
         Task<IEnumerable<Cabania>> ListarCabanias();
         Task<Cabania> BuscarCabaniaDisponibilidad(int id, DateTime? fechaInicio, DateTime? fechaFin);
+        Task<IEnumerable<Reserva>> GenerarReservaPorFecha(DateTime fechaInicio, DateTime fechaFin);
         Task<int> Crear(Reserva model);
         Task<int> Editar(Reserva model);
         Task<int> Eliminar(int id);

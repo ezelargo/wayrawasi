@@ -25,7 +25,7 @@
                 <td>@reservacion.FechaEntrada.ToString()</td>
                 <td>@reservacion.FechaSalida.ToString()</td>
                 <td>@reservacion.NumeroPersonas</td>
-                <td>@reservacion.IdCabania</td>
+                <td>@reservacion.Cabania?.NombreCabania</td>
                 <td>
                     <a href="@Url.Action("Edit", new { id = reservacion.IdReservacion })" class="btn btn-warning">Editar</a>
                     <a href="@Url.Action("Details", new { id = reservacion.IdReservacion })" class="btn btn-info">Detalles</a>
