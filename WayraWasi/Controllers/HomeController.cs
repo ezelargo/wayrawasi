@@ -21,13 +21,13 @@ namespace WayraWasi.Controllers
             return View();
         }
 
-        public ActionResult Disponibilidad()
+        public IActionResult Disponibilidad()
         {
             return View();
         }
 
         [HttpPost]
-        public async Task<ActionResult> Disponibilidad(DateTime fechaInicio, DateTime fechaFin)
+        public async Task<IActionResult> Disponibilidad(DateTime fechaInicio, DateTime fechaFin)
         {
             var disponibilidad = await _homeRepository.ListarDisponibilidadPorFecha(fechaInicio, fechaFin);
             return View(disponibilidad);

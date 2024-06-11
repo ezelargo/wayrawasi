@@ -64,11 +64,10 @@ namespace WayraWasi.Controllers
 
 
                     /* Generacion de reportes por PDF */
-                    document.Add(new Paragraph("Reporte de Reservas").SetTextAlignment(TextAlignment.CENTER).SetFontSize(18));
-                    document.Add(new Paragraph($"Desde {DateTime.Now.ToString("yyyy-MM-dd")}").SetTextAlignment(TextAlignment.CENTER).SetFontSize(10));
+                    document.Add(new Paragraph($"Reporte de Reservas generado el {DateTime.Now.ToString("yyyy-MM-dd")}").SetTextAlignment(TextAlignment.CENTER).SetFontSize(18));
                     document.Add(new Paragraph("\n"));                    
 
-                    Table table = new Table(6, true);
+                    Table table = new Table(5, true);
 
                     table.AddHeaderCell("Nombre Cliente");
                     table.AddHeaderCell("Fecha Entrada");
