@@ -27,6 +27,10 @@ namespace WayraWasi.Models
 
         [ForeignKey("FKCabania")]
         public int IdCabania { get; set; }
+
+        [Required]
+        [StringLength(50)]
+        public string Estado { get; set; }
         public virtual Cabania Cabania { get; set; }
     }
 }

@@ -14,12 +14,13 @@ namespace WayraWasi.Data.Implementations
             _conexionDapper = conexionDapper;
         }
 
-        public async Task<IEnumerable<Reserva>> ListarDisponibilidadPorFecha(DateTime fechaInicio, DateTime fechaFin)
+        // Integran las dos fechas
+        public async Task<IEnumerable<Cabania>> ListarDisponibilidadPorFecha(DateTime fechaInicio, DateTime fechaFin)
         {
             using (var conexionD = _conexionDapper.GetConnection())
             {
-                return await conexionD.QueryAsync<Reserva>("" +
-                    "SELECT Cabanias.NombreCabania, FechaEntrada, FechaSalida, Cabanias.Disponible FROM Reservaciones INNER JOIN Cabanias ON Cabanias.IdCabania = Reservaciones.IdCabania"
+                // El CASE lo utilizo como un if donde si es NULL esta desocupada(Porque la cabaña no se asigna a ninguna reserva) y si no es NULL entonces esta ocupada
+                return await conexionD.QueryAsync<Cabania>("SELECT c.NombreCabania, c.Descripcion, c.Capacidad, c.PrecioNoche, CASE WHEN r.IdCabania IS NULL THEN 'Disponible' ELSE 'Ocupada' END AS Disponibilidad FROM Cabanias c INNER JOIN Reservaciones r ON  c.IdCabania = r.IdCabania WHERE r.FechaEntrada BETWEEN @FechaEntrada AND @FechaSalida OR r.FechaSalida BETWEEN @FechaEntrada AND @FechaSalida"
                     , new { FechaEntrada = fechaInicio, FechaSalida = fechaFin }); // Esta es la forma por la cual Dapper ingresa valores de busqueda para SQL
             }
         }

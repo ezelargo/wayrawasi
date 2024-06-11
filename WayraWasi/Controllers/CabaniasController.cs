@@ -9,13 +9,11 @@ namespace WayraWasi.Controllers
     {
         private readonly ILogger<CabaniasController> _logger;
         private readonly CabaniaRepository _repository; // Utilizo los repositories para no interactuar con el IGenericRepository(Ya que los metodos existen pero esta es solo una interfaz mientras que el repositorio tiene todo el codigo necesario) ni el modelo directamente
-        private readonly ReservaRepository _reservaRepository;
 
-        public CabaniasController(ILogger<CabaniasController> logger, CabaniaRepository repository, ReservaRepository reservaRepository)
+        public CabaniasController(ILogger<CabaniasController> logger, CabaniaRepository repository)
         {
             _logger = logger;
             _repository = repository;
-            _reservaRepository = reservaRepository;
         }
 
 
@@ -81,7 +79,7 @@ namespace WayraWasi.Controllers
             if (Cabania == null)
                 return NotFound();
 
-            var reservas = await _reservaRepository.BuscarPorIDCabania(id); // Buscar si hay alguna cabaña relacionada a alguna reserva
+            var reservas = await _repository.BuscarReservaAsignadaACabania(id); // Buscar si hay alguna cabaña relacionada a alguna reserva
             if (reservas != null)
             {
                 TempData["ErrorMessage"] = "No se puede eliminar la cabaña porque tiene reservas asociadas. Elimina las reservas primero.";

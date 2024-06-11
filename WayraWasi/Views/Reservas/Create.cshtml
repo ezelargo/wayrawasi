@@ -1,7 +1,13 @@
 ﻿@model WayraWasi.Models.Reserva
 @{
     ViewBag.Title = "Crear Reservación";
-    List<WayraWasi.Models.Cabania> cabañas = ViewBag.Cabanias;
+    List<WayraWasi.Models.Cabania> cabañas = ViewBag.Cabanias ?? new List<WayraWasi.Models.Cabania>();
+}
+@if (TempData["ExistingCabain"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["ExistingCabain"]
+    </div>
 }
 
 <h2>Crear Reservación</h2>
@@ -45,18 +51,23 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.IdCabania, "Cabaña", htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.IdCabania, "Cabañas", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 <select id="IdCabania" name="IdCabania" class="form-control">
-                    <option value="">Seleccione una Cabaña</option>
-                    @foreach (var cabania in cabañas)
+                    @if (cabañas != null && cabañas.Count > 0)
                     {
-                        <option value="@cabania.IdCabania @(cabania.Disponible ? "" : "disabled")">
-                            @cabania.NombreCabania @(cabania.Disponible ? "" : "(No Disponible)")
-                        </option>
+                        @foreach (var cabania in cabañas)
+                        {
+                            <option value="@cabania.IdCabania">@cabania.NombreCabania</option>
+                        }
+                    }
+                    else
+                    {
+                        <option value="">No hay cabañas disponibles</option>
                     }
                 </select>
                 @Html.ValidationMessageFor(model => model.IdCabania, "", new { @class = "text-danger" })
+                @Html.HiddenFor(model => model.Cabania.Capacidad, new { id = "CapacidadCabaña" })
             </div>
         </div>
 

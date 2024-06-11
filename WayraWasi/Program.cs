@@ -19,7 +19,7 @@ namespace WayraWasi
             builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                .AddEntityFrameworkStores<DBDapperContext>()
                .AddDefaultTokenProviders();
-
+            
             builder.Services.AddScoped<DBDapperContext>(provider =>
             {
                 var connectionDapper = builder.Configuration.GetConnectionString("DBConnection");

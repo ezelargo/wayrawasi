@@ -4,6 +4,13 @@
     ViewBag.Title = "Listado de Cabañas";
 }
 
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
 <h2>Listado de Cabañas</h2>
 
 <p>

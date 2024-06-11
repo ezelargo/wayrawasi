@@ -5,7 +5,7 @@ using Dapper;
 
 namespace WayraWasi.Data.Implementations
 {
-    public class CabaniaRepository : IGenericRepository<Cabania>
+    public class CabaniaRepository : ICabaniasRepository
     {
         private readonly DBDapperContext _conexionDapper;
 
@@ -18,6 +18,13 @@ namespace WayraWasi.Data.Implementations
             using (var conexionD = _conexionDapper.GetConnection())
             {
                 return await conexionD.QueryFirstOrDefaultAsync<Cabania>("SELECT * FROM Cabanias WHERE IdCabania = @Id ", new { Id = id });
+            }
+        }
+        public async Task<Reserva> BuscarReservaAsignadaACabania(int id)
+        {
+            using (var conexionD = _conexionDapper.GetConnection())
+            {
+                return await conexionD.QueryFirstOrDefaultAsync<Reserva>("SELECT * FROM Reservaciones WHERE IdCabania = @Id", new { Id = id });
             }
         }
 
