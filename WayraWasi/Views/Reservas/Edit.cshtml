@@ -3,6 +3,7 @@
     ViewBag.Title = "Editar Reservación";
     List<WayraWasi.Models.Cabania> cabañas = ViewBag.Cabanias;
     List<string> estados = new List<string> { "Reservado", "Check-in finalizado", "Check-out finalizado" };
+    Cabania cabañaSeleccionada = ViewBag.CabaniaSeleccionada != null ? cabañaSeleccionada = ViewBag.CabaniaSeleccionada : new Cabania();
 }
 @if (TempData["ExistingCabain"] != null)
 {
@@ -57,6 +58,10 @@
             @Html.LabelFor(model => model.IdCabania, "Cabañas", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 <select id="IdCabania" name="IdCabania" class="form-control">
+                    @if (cabañaSeleccionada.NombreCabania != null)
+                    {
+                        <option value="@cabañaSeleccionada.IdCabania" selected>@cabañaSeleccionada.NombreCabania</option>
+                    }
                     @if (cabañas != null && cabañas.Count > 0)
                     {
                         @foreach (var cabania in cabañas)

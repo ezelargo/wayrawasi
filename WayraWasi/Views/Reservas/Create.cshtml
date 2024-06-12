@@ -1,12 +1,19 @@
 ﻿@model WayraWasi.Models.Reserva
 @{
     ViewBag.Title = "Crear Reservación";
+    Cabania cabañaSeleccionada = ViewBag.CabaniaSeleccionada != null ? cabañaSeleccionada = ViewBag.CabaniaSeleccionada : new Cabania();
     List<WayraWasi.Models.Cabania> cabañas = ViewBag.Cabanias ?? new List<WayraWasi.Models.Cabania>();
 }
 @if (TempData["ExistingCabain"] != null)
 {
     <div class="alert alert-danger">
         @TempData["ExistingCabain"]
+    </div>
+}
+@if (TempData["SameDate"] != null)
+{
+    <div class="alert alert-warning">
+        @TempData["SameDate"]
     </div>
 }
 
@@ -54,6 +61,11 @@
             @Html.LabelFor(model => model.IdCabania, "Cabañas", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 <select id="IdCabania" name="IdCabania" class="form-control">
+                    <option value="">Seleccione una cabaña</option>
+                    @if (cabañaSeleccionada.NombreCabania != null)
+                    {
+                        <option value="@cabañaSeleccionada.IdCabania" selected>@cabañaSeleccionada.NombreCabania</option>
+                    }
                     @if (cabañas != null && cabañas.Count > 0)
                     {
                         @foreach (var cabania in cabañas)
