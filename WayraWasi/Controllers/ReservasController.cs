@@ -109,8 +109,8 @@ namespace WayraWasi.Controllers
             {
                 var cabania = await _repository.BuscarPorIDCabania(reserva.IdCabania);
 
-                var cabaniaDisponible = await _repository.BuscarCabaniaDisponibilidad(reserva.IdCabania,reserva.FechaEntrada,reserva.FechaSalida);
-                if (cabaniaDisponible != null)
+                var cabaniaOcupada = await _repository.BuscarCabaniaDisponibilidad(reserva,reserva.FechaEntrada,reserva.FechaSalida);
+                if (cabaniaOcupada == true)
                 {
                     TempData["ExistingCabain"] = "La cabaña ya se encuentra reservada en esas fechas";
                     ViewBag.CabaniaSeleccionada = cabania;
@@ -148,22 +148,13 @@ namespace WayraWasi.Controllers
         public async Task<ActionResult> Edit(int id)
         {
             ViewBag.Cabanias = await _repository.ListarCabanias();
-
+            
             var reserva = await _repository.BuscadorId(id);
             if (reserva == null)
                 return NotFound();
 
             var cabania = await _repository.BuscarPorIDCabania(reserva.IdCabania);
-
-            var cabaniaDisponible = await _repository.BuscarCabaniaDisponibilidad(reserva.IdCabania, reserva.FechaEntrada, reserva.FechaSalida);
-            if (cabaniaDisponible != null)
-            {
-                TempData["ExistingCabain"] = "La cabaña ya se encuentra reservada en esas fechas";
-                ViewBag.CabaniaSeleccionada = cabania;
-                ViewBag.Cabanias = await _repository.ListarCabanias();
-                return View(reserva);
-            }
-
+            ViewBag.CabaniaSeleccionada = cabania;
             return View(reserva);
         }
 
@@ -179,14 +170,19 @@ namespace WayraWasi.Controllers
             try
             {
                 /* Cambio de cabaña y asignacion de fechas nuevas para cada una osea que una se libera y la otra se ocupa en ese rango de fechas */
-                var ReservaAntigua = await _repository.BuscadorId(id);
 
                 var cabania = await _repository.BuscarPorIDCabania(reserva.IdCabania);
-
+                ViewBag.CabaniaSeleccionada = cabania;
                 if (reserva.NumeroPersonas > cabania.Capacidad)
                 {
-                    ModelState.AddModelError("NumeroPersonas", $"El número de personas excede la capacidad de la cabaña seleccionada. La capacidad maxima es de {cabania.Capacidad}.");
-                    ViewBag.CabaniaSeleccionada = cabania;
+                    ModelState.AddModelError("NumeroPersonas", $"El número de personas excede la capacidad de la cabaña seleccionada. La capacidad maxima es de {cabania.Capacidad}.");                    
+                    ViewBag.Cabanias = await _repository.ListarCabanias();
+                    return View(reserva);
+                }
+                var cabaniaOcupada = await _repository.BuscarCabaniaDisponibilidad(reserva,reserva.FechaEntrada, reserva.FechaSalida);
+                if (cabaniaOcupada == true)
+                {
+                    TempData["ExistingCabain"] = "La cabaña ya se encuentra reservada en esas fechas";
                     ViewBag.Cabanias = await _repository.ListarCabanias();
                     return View(reserva);
                 }

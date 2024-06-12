@@ -18,7 +18,7 @@ namespace WayraWasi.Data.Implementations
         {
             using (var conexionD = _conexionDapper.GetConnection())
             {
-                return await conexionD.QueryFirstOrDefaultAsync<Reserva>("SELECT * FROM Reservaciones WHERE IdReservacion = @Id", new { Id = id });
+                return await conexionD.QueryFirstOrDefaultAsync<Reserva>("sp_BuscarReservaId", new { Id = id }, commandType: CommandType.StoredProcedure);
             }
         }
 
@@ -26,7 +26,7 @@ namespace WayraWasi.Data.Implementations
         {
             using (var conexionD = _conexionDapper.GetConnection())
             {
-                return await conexionD.QueryFirstOrDefaultAsync<Cabania>("SELECT * FROM Cabanias WHERE IdCabania = @Id", new { Id = id });
+                return await conexionD.QueryFirstOrDefaultAsync<Cabania>("sp_BuscarCabaniaPorID", new { Id = id }, commandType: CommandType.StoredProcedure);
             }
         }
 
@@ -34,7 +34,10 @@ namespace WayraWasi.Data.Implementations
         {
             using (var conexionD = _conexionDapper.GetConnection())
             {
-                return await conexionD.QueryAsync<Reserva, Cabania, Reserva>("SELECT * FROM Reservaciones r INNER JOIN Cabanias c ON c.IdCabania = r.IdCabania",(reserva, cabania) => { reserva.Cabania = cabania; return reserva; },splitOn: "IdCabania");
+                return await conexionD.QueryAsync<Reserva, Cabania, Reserva>("sp_ListarReservas", 
+                                                                            (reserva, cabania) => { reserva.Cabania = cabania; return reserva; },
+                                                                            splitOn: "IdCabania",
+                                                                            commandType: CommandType.StoredProcedure);
             }
         }
 
@@ -42,16 +45,18 @@ namespace WayraWasi.Data.Implementations
         {
             using (var conexionD = _conexionDapper.GetConnection())
             {
-                return await conexionD.QueryAsync<Cabania>("SELECT * FROM Cabanias");
+                return await conexionD.QueryAsync<Cabania>("sp_ListarCabanias", commandType: CommandType.StoredProcedure);
             }
         }
         
-        public async Task<Cabania> BuscarCabaniaDisponibilidad(int id,DateTime? fechaInicio, DateTime? fechaFin)
+        public async Task<bool> BuscarCabaniaDisponibilidad(Reserva reserva,DateTime? fechaInicio, DateTime? fechaFin)
         {
             using (var conexionD = _conexionDapper.GetConnection())
             {
                 // Esta consulta compara si la fecha de entrada coincide en el rango de fechas entre la entrada o la salida de alguna reserva y lo mismo para la Fecha de Salida. Teniendo asi que ni la entrada ni la salida se solapan con otra reserva.
-                return await conexionD.QueryFirstOrDefaultAsync<Cabania>("SELECT * FROM Cabanias c INNER JOIN Reservaciones r ON r.IdCabania = c.IdCabania WHERE r.FechaEntrada BETWEEN @FechaEntrada AND @FechaSalida OR r.FechaSalida BETWEEN @FechaEntrada AND @FechaSalida", new { FechaEntrada = fechaInicio, FechaSalida = fechaFin });
+                return await conexionD.QueryFirstOrDefaultAsync<bool>("sp_BuscarDisponibilidadCabania", 
+                                                                        new { FechaEntrada = fechaInicio, FechaSalida = fechaFin, IdCabania = reserva.IdCabania, IdReserva = reserva.IdReservacion },
+                                                                        commandType: CommandType.StoredProcedure);
             }
         }
 
@@ -59,8 +64,9 @@ namespace WayraWasi.Data.Implementations
         {
             using (var conexionD = _conexionDapper.GetConnection())
             {
-                return await conexionD.QueryAsync<Reserva>("SELECT * FROM Reservaciones r INNER JOIN Cabanias c ON c.IdCabania = r.IdCabania WHERE r.FechaEntrada BETWEEN @FechaEntrada AND @FechaSalida OR r.FechaSalida BETWEEN @FechaEntrada AND @FechaSalida"
-                    , new { FechaEntrada = fechaInicio, FechaSalida = fechaFin });
+                return await conexionD.QueryAsync<Reserva>("sp_GenerarReservaPorFecha",
+                                                            new { FechaEntrada = fechaInicio, FechaSalida = fechaFin },
+                                                            commandType: CommandType.StoredProcedure);
             }
         }
 
@@ -68,7 +74,16 @@ namespace WayraWasi.Data.Implementations
         {
             using (var conexionD = _conexionDapper.GetConnection())
             {
-                return await conexionD.ExecuteAsync("INSERT INTO Reservaciones (NombreCliente, FechaEntrada, FechaSalida, NumeroPersonas, IdCabania, CabaniaIdCabania, Estado) VALUES (@NombreCliente, @FechaEntrada, @FechaSalida, @NumeroPersonas, @IdCabania,@IdCabania, 'Reservado')", modelo);
+                return await conexionD.ExecuteAsync("sp_CrearReserva",
+                                                    new
+                                                    {
+                                                        modelo.NombreCliente,
+                                                        modelo.FechaEntrada,
+                                                        modelo.FechaSalida,
+                                                        modelo.NumeroPersonas,
+                                                        modelo.IdCabania
+                                                    },
+                                                    commandType: CommandType.StoredProcedure);
             }
         }
 
@@ -76,7 +91,18 @@ namespace WayraWasi.Data.Implementations
         {
             using (var conexionD = _conexionDapper.GetConnection())
             {
-                return await conexionD.ExecuteAsync("UPDATE Reservaciones SET NombreCliente = @NombreCliente, FechaEntrada = @FechaEntrada, FechaSalida = @FechaSalida, NumeroPersonas = @NumeroPersonas, IdCabania = @IdCabania, CabaniaIdCabania = @IdCabania, Estado = @Estado WHERE IdReservacion = @IdReservacion", modelo);
+                return await conexionD.ExecuteAsync("sp_EditarReserva",
+                                                    new
+                                                    {
+                                                        modelo.IdReservacion,
+                                                        modelo.NombreCliente,
+                                                        modelo.FechaEntrada,
+                                                        modelo.FechaSalida,
+                                                        modelo.NumeroPersonas,
+                                                        modelo.IdCabania,
+                                                        modelo.Estado
+                                                    },
+                                                    commandType: CommandType.StoredProcedure);
             }
         }
 
@@ -84,14 +110,16 @@ namespace WayraWasi.Data.Implementations
         {
             using (var conexionD = _conexionDapper.GetConnection())
             {
-                var reserva = await conexionD.QueryFirstOrDefaultAsync<Reserva>("SELECT * FROM Reservaciones WHERE IdReservacion = @Id", new { Id = id });
+                var reserva = await BuscadorId(id);
 
                 if (reserva == null)
                 {
                     throw new Exception("La reserva no existe.");
                 }
 
-                return await conexionD.ExecuteAsync("DELETE FROM Reservaciones WHERE IdReservacion = @Id", new { Id = id });
+                return await conexionD.ExecuteAsync("sp_EliminarReserva",
+                                                    new { IdReservacion = id },
+                                                    commandType: CommandType.StoredProcedure);
             }
         }
 

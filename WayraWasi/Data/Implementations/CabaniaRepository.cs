@@ -42,7 +42,7 @@ namespace WayraWasi.Data.Implementations
             {
                 using (var conexionD = _conexionDapper.GetConnection())
                 {
-                    return await conexionD.ExecuteAsync("INSERT INTO Cabanias (NombreCabania, Descripcion, Capacidad, PrecioNoche, Disponible) VALUES (@NombreCabania, @Descripcion, @Capacidad, @PrecioNoche, 1)", modelo);
+                    return await conexionD.ExecuteAsync("INSERT INTO Cabanias (NombreCabania, Descripcion, Capacidad, PrecioNoche) VALUES (@NombreCabania, @Descripcion, @Capacidad, @PrecioNoche)", modelo);
                 }
             }
             catch (Exception ex) { 
@@ -55,7 +55,7 @@ namespace WayraWasi.Data.Implementations
         {
             using (var conexionD = _conexionDapper.GetConnection())
             {
-                return await conexionD.ExecuteAsync("UPDATE Cabanias SET NombreCabania = @NombreCabania, Descripcion = @Descripcion, Capacidad = @Capacidad, PrecioNoche = @PrecioNoche, Disponible = @Disponible WHERE IdCabania = @IdCabania", modelo);
+                return await conexionD.ExecuteAsync("UPDATE Cabanias SET NombreCabania = @NombreCabania, Descripcion = @Descripcion, Capacidad = @Capacidad, PrecioNoche = @PrecioNoche WHERE IdCabania = @IdCabania", modelo);
             }
         }
 
