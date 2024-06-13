@@ -17,14 +17,18 @@ namespace WayraWasi.Data.Implementations
         {
             using (var conexionD = _conexionDapper.GetConnection())
             {
-                return await conexionD.QueryFirstOrDefaultAsync<Cabania>("SELECT * FROM Cabanias WHERE IdCabania = @Id ", new { Id = id });
+                return await conexionD.QueryFirstOrDefaultAsync<Cabania>("sp_BuscarCabaniaId",
+                                                                          new { Id = id },
+                                                                          commandType: CommandType.StoredProcedure);
             }
         }
         public async Task<Reserva> BuscarReservaAsignadaACabania(int id)
         {
             using (var conexionD = _conexionDapper.GetConnection())
             {
-                return await conexionD.QueryFirstOrDefaultAsync<Reserva>("SELECT * FROM Reservaciones WHERE IdCabania = @Id", new { Id = id });
+                return await conexionD.QueryFirstOrDefaultAsync<Reserva>("sp_BuscarReservaAsignadaACabania",
+                                                                         new { Id = id },
+                                                                         commandType: CommandType.StoredProcedure);
             }
         }
 
@@ -32,7 +36,7 @@ namespace WayraWasi.Data.Implementations
         {
             using (var conexionD = _conexionDapper.GetConnection())
             {
-                return await conexionD.QueryAsync<Cabania>("SELECT * FROM Cabanias");
+                return await conexionD.QueryAsync<Cabania>("sp_ListarTodasCabanias", commandType: CommandType.StoredProcedure);
             }
         }
 
@@ -42,8 +46,15 @@ namespace WayraWasi.Data.Implementations
             {
                 using (var conexionD = _conexionDapper.GetConnection())
                 {
-                    return await conexionD.ExecuteAsync("INSERT INTO Cabanias (NombreCabania, Descripcion, Capacidad, PrecioNoche) VALUES (@NombreCabania, @Descripcion, @Capacidad, @PrecioNoche)", modelo);
-                }
+                    return await conexionD.ExecuteAsync("sp_CrearCabania",
+                                                        new
+                                                        {
+                                                            modelo.NombreCabania,
+                                                            modelo.Descripcion,
+                                                            modelo.Capacidad,
+                                                            modelo.PrecioNoche
+                                                        }, commandType: CommandType.StoredProcedure);
+                                                        }
             }
             catch (Exception ex) { 
                 Console.WriteLine(ex.ToString());
@@ -55,7 +66,15 @@ namespace WayraWasi.Data.Implementations
         {
             using (var conexionD = _conexionDapper.GetConnection())
             {
-                return await conexionD.ExecuteAsync("UPDATE Cabanias SET NombreCabania = @NombreCabania, Descripcion = @Descripcion, Capacidad = @Capacidad, PrecioNoche = @PrecioNoche WHERE IdCabania = @IdCabania", modelo);
+                return await conexionD.ExecuteAsync("sp_EditarCabania",
+            new
+            {
+                modelo.IdCabania,
+                modelo.NombreCabania,
+                modelo.Descripcion,
+                modelo.Capacidad,
+                modelo.PrecioNoche
+            }, commandType: CommandType.StoredProcedure);
             }
         }
 
@@ -63,7 +82,9 @@ namespace WayraWasi.Data.Implementations
         {
             using (var conexionD = _conexionDapper.GetConnection())
             {
-                return await conexionD.ExecuteAsync("DELETE FROM Cabanias WHERE IdCabania = @Id", new { Id = id });
+                return await conexionD.ExecuteAsync("sp_EliminarCabania",
+            new { IdCabania = id },
+            commandType: CommandType.StoredProcedure);
             }
         }
     }

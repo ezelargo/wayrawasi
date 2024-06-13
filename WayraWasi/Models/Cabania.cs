@@ -16,6 +16,8 @@ namespace WayraWasi.Models
 
         public double PrecioNoche { get; set; }
 
+        public string Disponibilidad { get; set; }
+
         public virtual ICollection<Reserva> Reservas { get; set; }
     }
 }

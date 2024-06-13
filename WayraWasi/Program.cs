@@ -16,10 +16,6 @@ namespace WayraWasi
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-               .AddEntityFrameworkStores<DBDapperContext>()
-               .AddDefaultTokenProviders();
-            
             builder.Services.AddScoped<DBDapperContext>(provider =>
             {
                 var connectionDapper = builder.Configuration.GetConnectionString("DBConnection");
@@ -29,6 +25,8 @@ namespace WayraWasi
             builder.Services.AddScoped<IHomeRepository, HomeRepository>();
             builder.Services.AddScoped<ReservaRepository>();
             builder.Services.AddScoped<CabaniaRepository>();
+
+            builder.Services.AddRazorPages();
 
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
