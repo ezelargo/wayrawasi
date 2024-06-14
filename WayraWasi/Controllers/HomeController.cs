@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using WayraWasi.Data;
@@ -5,6 +6,7 @@ using WayraWasi.Models;
 
 namespace WayraWasi.Controllers
 {
+    [Authorize] // Se utiliza para restringir el acceso a los controladores o acciones a usuarios autenticados
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger; // Este es el login que viene por defecto en el programa

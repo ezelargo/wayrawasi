@@ -1,13 +1,18 @@
-﻿using System.Data;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using System.Data;
 using System.Data.SqlClient;
 
 namespace WayraWasi.Data
 {
-    public class DBDapperContext
+    public class DBDapperContext : IdentityDbContext
     {
         private readonly string _connectionDapper;
 
-        //No es necesario conectarlo al program para que funcione
+        public DBDapperContext(DbContextOptions<DBDapperContext> options)
+            : base(options)
+        {
+        }
         public DBDapperContext(string connectionDapper)
         {
             _connectionDapper = connectionDapper;
