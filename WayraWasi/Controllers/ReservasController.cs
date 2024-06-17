@@ -2,6 +2,7 @@
 using iText.Layout;
 using iText.Layout.Element;
 using iText.Layout.Properties;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Newtonsoft.Json;
@@ -11,6 +12,7 @@ using WayraWasi.Models;
 
 namespace WayraWasi.Controllers
 {
+    [Authorize]
     public class ReservasController : Controller
     {
         private readonly ILogger<ReservasController> _logger;

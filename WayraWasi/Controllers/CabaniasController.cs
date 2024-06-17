@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using WayraWasi.Data;
 using WayraWasi.Data.Implementations;
 using WayraWasi.Models;
 
 namespace WayraWasi.Controllers
 {
+    [Authorize]
     public class CabaniasController : Controller
     {
         private readonly ILogger<CabaniasController> _logger;

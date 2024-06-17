@@ -1,28 +1,22 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-using WayraWasi.Data;
-using WayraWasi.Data.Implementations;
-using WayraWasi.Models;
-using Microsoft.AspNetCore.Identity;
 using WayraWasi.ViewModels;
 
 namespace WayraWasi.Controllers
 {
-    public class UsuariosController : Controller
+    public class AccountController : Controller
     {
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
 
-        public UsuariosController(UserManager<IdentityUser> userManager,SignInManager<IdentityUser> signInManager)
+        public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
         {
             _signInManager = signInManager;
             _userManager = userManager;
         }
 
         /* Solo se le mostrara una pagina para logearse en la cual tambien podra registrase */
-        
+
         public IActionResult Registro()
         {
             return View();
@@ -74,11 +68,13 @@ namespace WayraWasi.Controllers
             return View(modelo);
         }
 
+        [HttpPost]
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
+
         private IActionResult Redireccionar(string returnUrl)
         {
             if (Url.IsLocalUrl(returnUrl))
@@ -92,3 +88,4 @@ namespace WayraWasi.Controllers
         }
     }
 }
+

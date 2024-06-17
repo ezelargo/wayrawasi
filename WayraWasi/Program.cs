@@ -18,25 +18,28 @@ namespace WayraWasi
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddDbContext<DBDapperContext>(options =>
-            options.UseSqlServer(builder.Configuration.GetConnectionString("DBConnection")));
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DBConnection")));
 
-            builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
-                .AddEntityFrameworkStores<DBDapperContext>();
+            builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+            .AddEntityFrameworkStores<DBDapperContext>()
+            .AddDefaultTokenProviders();
 
-            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-            .AddCookie(options =>
-            {
-                options.LoginPath = "/Usuarios/Login";
-                options.LogoutPath = "/Usuarios/Logout";
-            });
-
-            builder.Services.AddHttpContextAccessor();
             builder.Services.AddSession(options =>
             {
                 options.IdleTimeout = TimeSpan.FromMinutes(30);
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
             });
+
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.LoginPath = "/Usuarios/Login";
+                    options.LogoutPath = "/Usuarios/Logout";
+                });
+
+            builder.Services.AddAuthorization();
+            builder.Services.AddHttpContextAccessor();
 
             builder.Services.AddScoped<IHomeRepository, HomeRepository>();
             builder.Services.AddScoped<ReservaRepository>();
@@ -69,6 +72,7 @@ namespace WayraWasi
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(

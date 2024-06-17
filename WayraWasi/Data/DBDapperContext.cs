@@ -9,13 +9,10 @@ namespace WayraWasi.Data
     {
         private readonly string _connectionDapper;
 
-        public DBDapperContext(DbContextOptions<DBDapperContext> options)
-            : base(options)
+        public DBDapperContext(DbContextOptions<DBDapperContext> options, IConfiguration configuration)
+        : base(options)
         {
-        }
-        public DBDapperContext(string connectionDapper)
-        {
-            _connectionDapper = connectionDapper;
+            _connectionDapper = configuration.GetConnectionString("DBConnection");
         }
         // Crea una nueva conexión a la base de datos por cada solicitud HTTP, y evita compartir conexiones con otras solicitudes.
         public IDbConnection GetConnection(){
