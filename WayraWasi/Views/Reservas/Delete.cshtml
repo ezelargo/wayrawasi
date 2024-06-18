@@ -5,6 +5,8 @@
 
 <h2>Eliminar Reservación</h2>
 
+@Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+
 <h3>¿Está seguro de que desea eliminar esta reservación?</h3>
 <div>
     <h4>Reservación</h4>
@@ -51,3 +53,8 @@
         </div>
     }
 </div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

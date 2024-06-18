@@ -1,4 +1,5 @@
-﻿using iText.Kernel.Pdf;
+﻿using FluentValidation;
+using iText.Kernel.Pdf;
 using iText.Layout;
 using iText.Layout.Element;
 using iText.Layout.Properties;
@@ -17,13 +18,14 @@ namespace WayraWasi.Controllers
     {
         private readonly ILogger<ReservasController> _logger;
         private readonly ReservaRepository _repository;
+        private readonly IValidator<Reserva> _validator;
 
-        public ReservasController(ILogger<ReservasController> logger, ReservaRepository repository)
+        public ReservasController(ILogger<ReservasController> logger, ReservaRepository repository, IValidator<Reserva> validator)
         {
-            _logger = logger; 
+            _logger = logger;
             _repository = repository;
+            _validator = validator;
         }
-
 
         // GET: ReservasController
         public async Task<ActionResult> Index()
@@ -55,7 +57,7 @@ namespace WayraWasi.Controllers
             return File(pdf, "application/pdf", "Reportes de Reservas.pdf");
         }
 
-        private byte[] GenerarReportePDF(IEnumerable<Reserva> reservas) // El Byte sirve para representar un archivo PDF en memoria, pudiendo enviarse a una respuesta HTTP para su descarga
+        private byte[] GenerarReportePDF(IEnumerable<Reserva> reservas)
         {
             using (var stream = new MemoryStream())
             {
@@ -65,10 +67,8 @@ namespace WayraWasi.Controllers
                     PdfDocument pdf = new PdfDocument(writer);
                     Document document = new Document(pdf);
 
-
-                    /* Generacion de reportes por PDF */
-                    document.Add(new Paragraph($"Reporte de Reservas generado el {DateTime.Now.ToString("yyyy-MM-dd")}").SetTextAlignment(TextAlignment.CENTER).SetFontSize(18));
-                    document.Add(new Paragraph("\n"));                    
+                    document.Add(new Paragraph($"Reporte generado el {DateTime.Now:yyyy-MM-dd}").SetTextAlignment(TextAlignment.CENTER).SetFontSize(18));
+                    document.Add(new Paragraph("\n"));
 
                     Table table = new Table(5, true);
 
@@ -78,7 +78,7 @@ namespace WayraWasi.Controllers
                     table.AddHeaderCell("Nombre de cabaña");
                     table.AddHeaderCell("Estado");
 
-                    foreach (var reserva in reservas) // Me imprime una
+                    foreach (var reserva in reservas)
                     {
                         var cabania = _repository.BuscarPorIDCabania(reserva.IdCabania);
                         table.AddCell(reserva.NombreCliente);
@@ -107,50 +107,31 @@ namespace WayraWasi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Reserva reserva)
         {
-            try
+            var validationResult = await _validator.ValidateAsync(reserva);
+
+            if (!validationResult.IsValid)
             {
-                var cabania = await _repository.BuscarPorIDCabania(reserva.IdCabania);
-
-                var cabaniaOcupada = await _repository.BuscarCabaniaDisponibilidad(reserva,reserva.FechaEntrada,reserva.FechaSalida);
-                if (cabaniaOcupada == true)
+                foreach (var error in validationResult.Errors)
                 {
-                    TempData["ExistingCabain"] = "La cabaña ya se encuentra reservada en esas fechas";
-                    ViewBag.CabaniaSeleccionada = cabania;
-                    ViewBag.Cabanias = await _repository.ListarCabanias();
-                    return View(reserva);
+                    if (!ModelState.ContainsKey(error.PropertyName) || ModelState[error.PropertyName]?.Errors.All(e => e.ErrorMessage != error.ErrorMessage) == true) // Solo se muestra una vez el error
+                    {
+                        ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+                    }
                 }
 
-                // Veo si el numero de personas ingresado no excede la capacidad de la cabaña
-                if (reserva.NumeroPersonas > cabania.Capacidad)
-                {
-                    ModelState.AddModelError("NumeroPersonas", $"El número de personas excede la capacidad de la cabaña seleccionada. La capacidad maxima es de {cabania.Capacidad}.");
-                    ViewBag.CabaniaSeleccionada = cabania;
-                    ViewBag.Cabanias = await _repository.ListarCabanias();
-                    return View(reserva);
-                }
-
-                if (reserva.FechaEntrada == reserva.FechaSalida)
-                {
-                    // Usar misma reserva
-                    TempData["SameDate"] = "Debe haber al menos un dia de diferencia entre fechas";
-                    ViewBag.CabaniaSeleccionada = cabania;
-                    ViewBag.Cabanias = await _repository.ListarCabanias();
-                    return View(reserva);
-                }
-                await _repository.Crear(reserva);
-                return RedirectToAction("Index");
+                ViewBag.Cabanias = await _repository.ListarCabanias();
+                return View(reserva);
             }
-            catch
-            {
-                return View();
-            }
+
+            await _repository.Crear(reserva);
+            return RedirectToAction("Index");
         }
 
         // GET: ReservasController/Edit/5
         public async Task<ActionResult> Edit(int id)
         {
             ViewBag.Cabanias = await _repository.ListarCabanias();
-            
+
             var reserva = await _repository.BuscadorId(id);
             if (reserva == null)
                 return NotFound();
@@ -163,39 +144,31 @@ namespace WayraWasi.Controllers
         // POST: ReservasController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(int id,Reserva reserva)
+        public async Task<IActionResult> Edit(int id, Reserva reserva)
         {
             if (id != reserva.IdReservacion)
             {
                 return BadRequest();
             }
-            try
-            {
-                /* Cambio de cabaña y asignacion de fechas nuevas para cada una osea que una se libera y la otra se ocupa en ese rango de fechas */
+            var cabania = await _repository.BuscarPorIDCabania(reserva.IdCabania);
+            var validationResult = await _validator.ValidateAsync(reserva);
 
-                var cabania = await _repository.BuscarPorIDCabania(reserva.IdCabania);
+            if (!validationResult.IsValid)
+            {
+                foreach (var error in validationResult.Errors)
+                {
+                    if (!ModelState.ContainsKey(error.PropertyName) || ModelState[error.PropertyName]?.Errors.All(e => e.ErrorMessage != error.ErrorMessage) == true)
+                    {
+                        ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+                    }
+                }
                 ViewBag.CabaniaSeleccionada = cabania;
-                if (reserva.NumeroPersonas > cabania.Capacidad)
-                {
-                    ModelState.AddModelError("NumeroPersonas", $"El número de personas excede la capacidad de la cabaña seleccionada. La capacidad maxima es de {cabania.Capacidad}.");                    
-                    ViewBag.Cabanias = await _repository.ListarCabanias();
-                    return View(reserva);
-                }
-                var cabaniaOcupada = await _repository.BuscarCabaniaDisponibilidad(reserva,reserva.FechaEntrada, reserva.FechaSalida);
-                if (cabaniaOcupada == true)
-                {
-                    TempData["ExistingCabain"] = "La cabaña ya se encuentra reservada en esas fechas";
-                    ViewBag.Cabanias = await _repository.ListarCabanias();
-                    return View(reserva);
-                }
-                await _repository.Editar(reserva);
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
+                ViewBag.Cabanias = await _repository.ListarCabanias();
+                return View(reserva);
+            }       
 
+            await _repository.Editar(reserva);
+            return RedirectToAction("Index");
         }
 
         // GET: ReservasController/Delete/5

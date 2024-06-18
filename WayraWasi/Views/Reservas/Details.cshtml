@@ -5,6 +5,8 @@
 
 <h2>Detalles de Reservación</h2>
 
+@Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+
 <div>
     <h4>Reservación</h4>
     <hr />
@@ -45,3 +47,8 @@
     <a href="@Url.Action("Edit", new { id = Model.IdReservacion })" class="btn btn-warning">Editar</a>
     <a href="@Url.Action("Index")" class="btn btn-primary">Volver a la Lista</a>
 </p>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

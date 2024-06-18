@@ -13,6 +13,8 @@
 
 <h2>Listado de Cabañas</h2>
 
+@Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+
 <p>
     <a href="@Url.Action("Create")" class="btn btn-primary">Crear Nueva Cabaña</a>
 </p>

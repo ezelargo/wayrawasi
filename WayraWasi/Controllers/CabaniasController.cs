@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WayraWasi.Data;
 using WayraWasi.Data.Implementations;
 using WayraWasi.Models;
 
@@ -10,27 +10,28 @@ namespace WayraWasi.Controllers
     public class CabaniasController : Controller
     {
         private readonly ILogger<CabaniasController> _logger;
-        private readonly CabaniaRepository _repository; // Utilizo los repositories para no interactuar con el IGenericRepository(Ya que los metodos existen pero esta es solo una interfaz mientras que el repositorio tiene todo el codigo necesario) ni el modelo directamente
+        private readonly CabaniaRepository _repository;
+        private readonly IValidator<Cabania> _validator;
 
-        public CabaniasController(ILogger<CabaniasController> logger, CabaniaRepository repository)
+        public CabaniasController(ILogger<CabaniasController> logger, CabaniaRepository repository, IValidator<Cabania> validator)
         {
             _logger = logger;
             _repository = repository;
+            _validator = validator;
         }
-
 
         // GET: CabaniasController
         public async Task<ActionResult> Index()
         {
-            var Cabania = await _repository.ListarTodos();
-            return View(Cabania);
+            var cabanias = await _repository.ListarTodos();
+            return View(cabanias);
         }
 
         // GET: CabaniasController/Details/5
         public async Task<ActionResult> Details(int id)
         {
-            var Cabania = await _repository.BuscadorId(id);
-            return View(Cabania);
+            var cabania = await _repository.BuscadorId(id);
+            return View(cabania);
         }
 
         // GET: CabaniasController/Create
@@ -42,59 +43,87 @@ namespace WayraWasi.Controllers
         // POST: CabaniasController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create( Cabania Cabania)
+        public async Task<IActionResult> Create(Cabania cabania)
         {
-                await _repository.Crear(Cabania);
-                return RedirectToAction("Index");
+            var validationResult = await _validator.ValidateAsync(cabania);
+
+            if (!validationResult.IsValid)
+            {
+                foreach (var error in validationResult.Errors)
+                {
+                    if (!ModelState.ContainsKey(error.PropertyName) || ModelState[error.PropertyName]?.Errors.All(e => e.ErrorMessage != error.ErrorMessage) == true)
+                    {
+                        ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+                    }
+                }
+                return View(cabania);
+            }
+
+            await _repository.Crear(cabania);
+            return RedirectToAction("Index");
         }
 
         // GET: CabaniasController/Edit/5
         public async Task<ActionResult> Edit(int id)
         {
-            var Cabania = await _repository.BuscadorId(id);
-            if (Cabania == null)
+            var cabania = await _repository.BuscadorId(id);
+            if (cabania == null)
                 return NotFound();
-            return View(Cabania);
+            return View(cabania);
         }
 
         // POST: CabaniasController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(Cabania Cabania)
+        public async Task<IActionResult> Edit(Cabania cabania)
         {
+            var validationResult = await _validator.ValidateAsync(cabania);
+
+            if (!validationResult.IsValid)
+            {
+                foreach (var error in validationResult.Errors)
+                {
+                    if (!ModelState.ContainsKey(error.PropertyName) || ModelState[error.PropertyName]?.Errors.All(e => e.ErrorMessage != error.ErrorMessage) == true)
+                    {
+                        ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+                    }
+                }
+
+                return View(cabania);
+            }
+
             try
             {
-                await _repository.Editar(Cabania);
+                await _repository.Editar(cabania);
                 return RedirectToAction("Index");
             }
             catch
             {
-                return View();
+                return View(cabania);
             }
-
         }
 
         // GET: CabaniasController/Delete/5
         public async Task<ActionResult> Delete(int id)
         {
-            var Cabania = await _repository.BuscadorId(id);
-            if (Cabania == null)
+            var cabania = await _repository.BuscadorId(id);
+            if (cabania == null)
                 return NotFound();
 
-            var reservas = await _repository.BuscarReservaAsignadaACabania(id); // Buscar si hay alguna cabaña relacionada a alguna reserva
+            var reservas = await _repository.BuscarReservaAsignadaACabania(id); // Reemplazarlo en FluentValidation
             if (reservas != null)
             {
-                TempData["ErrorMessage"] = "No se puede eliminar la cabaña porque tiene reservas asociadas. Elimina las reservas primero.";
+                ModelState.AddModelError(string.Empty, "No se puede eliminar la cabaña porque tiene reservas asociadas. Elimina las reservas primero.");
                 return RedirectToAction("Index");
             }
 
-            return View(Cabania);
+            return View(cabania);
         }
 
         // POST: CabaniasController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> DeleteConfirmation(int id)
+        public async Task<IActionResult> DeleteConfirmation(int id)
         {
             try
             {

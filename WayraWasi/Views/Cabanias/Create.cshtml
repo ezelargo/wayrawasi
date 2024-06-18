@@ -6,6 +6,8 @@
 
 <h2>Crear Cabaña</h2>
 
+@Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()

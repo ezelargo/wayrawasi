@@ -1,3 +1,4 @@
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Data.SqlClient;
@@ -8,6 +9,7 @@ using System.Data;
 using WayraWasi.Data;
 using WayraWasi.Data.Implementations;
 using WayraWasi.Models;
+using WayraWasi.Validators;
 
 namespace WayraWasi
 {
@@ -38,6 +40,17 @@ namespace WayraWasi
                     options.LogoutPath = "/Usuarios/Logout";
                 });
 
+
+
+            builder.Services.AddControllersWithViews()
+                .AddFluentValidation(fv =>
+                {
+                    fv.RegisterValidatorsFromAssemblyContaining<ReservasValidator>();
+                    fv.RegisterValidatorsFromAssemblyContaining<CabaniasValidator>();
+                    fv.RegisterValidatorsFromAssemblyContaining<LoginViewModelValidator>();
+                    fv.RegisterValidatorsFromAssemblyContaining<RegisterViewModelValidator>();
+                });
+
             builder.Services.AddAuthorization();
             builder.Services.AddHttpContextAccessor();
 
@@ -48,8 +61,6 @@ namespace WayraWasi
             builder.Services.AddRazorPages();
 
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-
-            builder.Services.AddControllersWithViews();
 
             //Dapper Connection
 

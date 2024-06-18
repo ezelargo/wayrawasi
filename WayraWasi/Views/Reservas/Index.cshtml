@@ -2,6 +2,8 @@
 
 <h2>Reservaciones</h2>
 
+@Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+
 <p>
     <a href="@Url.Action("Create")" class="btn btn-primary">Crear Nueva Reservación</a>
 </p>
@@ -35,3 +37,8 @@
         }
     </tbody>
 </table>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
