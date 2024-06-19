@@ -110,11 +110,18 @@ namespace WayraWasi.Controllers
             if (cabania == null)
                 return NotFound();
 
-            var reservas = await _repository.BuscarReservaAsignadaACabania(id); // Reemplazarlo en FluentValidation
-            if (reservas != null)
+            var validationResult = await _validator.ValidateAsync(cabania);
+
+            if (!validationResult.IsValid)
             {
-                ModelState.AddModelError(string.Empty, "No se puede eliminar la cabaña porque tiene reservas asociadas. Elimina las reservas primero.");
-                return RedirectToAction("Index");
+                foreach (var error in validationResult.Errors)
+                {
+                    if (!ModelState.ContainsKey(error.PropertyName) || ModelState[error.PropertyName]?.Errors.All(e => e.ErrorMessage != error.ErrorMessage) == true)
+                    {
+                        ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+                    }
+                }
+                return View(cabania);
             }
 
             return View(cabania);
@@ -126,7 +133,7 @@ namespace WayraWasi.Controllers
         public async Task<IActionResult> DeleteConfirmation(int id)
         {
             try
-            {
+            {                
                 await _repository.Eliminar(id);
                 return RedirectToAction("Index");
             }
