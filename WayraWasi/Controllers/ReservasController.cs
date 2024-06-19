@@ -107,6 +107,7 @@ namespace WayraWasi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Reserva reserva)
         {
+            var cabania = await _repository.BuscarPorIDCabania(reserva.IdCabania);
             var validationResult = await _validator.ValidateAsync(reserva);
 
             if (!validationResult.IsValid)
@@ -118,7 +119,7 @@ namespace WayraWasi.Controllers
                         ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
                     }
                 }
-
+                ViewBag.CabaniaSeleccionada = cabania;
                 ViewBag.Cabanias = await _repository.ListarCabanias();
                 return View(reserva);
             }

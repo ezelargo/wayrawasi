@@ -13,13 +13,22 @@ namespace WayraWasi.Validators
 
             _repository = repository;
 
-            RuleFor(r => r.NombreCliente).NotEmpty().WithMessage("El nombre del cliente es obligatorio.");
+            RuleFor(r => r.NombreCliente)
+                .NotEmpty().WithMessage("El nombre del cliente es obligatorio.");
+
             RuleFor(r => r.FechaEntrada)
                 .NotNull().WithMessage("La fecha de entrada es obligatoria.")
                 .LessThan(r => r.FechaSalida).WithMessage("La fecha de entrada debe ser anterior a la fecha de salida.");
-            RuleFor(r => r.FechaSalida).NotNull().WithMessage("La fecha de salida es obligatoria.");
-            RuleFor(r => r.NumeroPersonas).GreaterThan(0).WithMessage("El número de personas debe ser mayor a cero.");
+
+            RuleFor(r => r.FechaSalida)
+                .NotNull().WithMessage("La fecha de salida es obligatoria.");
+
+            RuleFor(r => r.NumeroPersonas)
+                .NotEmpty().WithMessage("La cantida de personas es obligatorio.")
+                .GreaterThan(0).WithMessage("El número de personas debe ser mayor a cero.");
+
             RuleFor(r => r.IdCabania).GreaterThan(0).WithMessage("Debe seleccionar una cabaña.");
+
             RuleFor(reserva => reserva)
             .Must(DisponibilidadCabaña).WithMessage("La cabaña ya se encuentra reservada en esas fechas.");
 
@@ -46,11 +55,8 @@ namespace WayraWasi.Validators
 
         private long ObtenerCapacidadCabania(int idCabania)
         {
-            Cabania cabaniaCapacidad =  _repository.BuscarPorIDCabania(idCabania).Result;
-            if(cabaniaCapacidad != null)
+                Cabania cabaniaCapacidad = _repository.BuscarPorIDCabania(idCabania).Result;
                 return cabaniaCapacidad.Capacidad;
-
-            return -1;
         }
     }
 }

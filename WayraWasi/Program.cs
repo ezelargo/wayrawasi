@@ -1,6 +1,7 @@
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -50,6 +51,7 @@ namespace WayraWasi
                     fv.RegisterValidatorsFromAssemblyContaining<LoginViewModelValidator>();
                     fv.RegisterValidatorsFromAssemblyContaining<RegisterViewModelValidator>();
                 });
+
 
             builder.Services.AddAuthorization();
             builder.Services.AddHttpContextAccessor();
