@@ -5,12 +5,6 @@
     List<string> estados = new List<string> { "Reservado", "Check-in finalizado", "Check-out finalizado" };
     Cabania cabañaSeleccionada = ViewBag.CabaniaSeleccionada;
 }
-@if (TempData["ExistingCabain"] != null)
-{
-    <div class="alert alert-danger">
-        @TempData["ExistingCabain"]
-    </div>
-}
 
 <h2>Editar Reservación</h2>
 
