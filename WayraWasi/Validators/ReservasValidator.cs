@@ -47,7 +47,10 @@ namespace WayraWasi.Validators
         private long ObtenerCapacidadCabania(int idCabania)
         {
             Cabania cabaniaCapacidad =  _repository.BuscarPorIDCabania(idCabania).Result;
-            return cabaniaCapacidad.Capacidad;
+            if(cabaniaCapacidad != null)
+                return cabaniaCapacidad.Capacidad;
+
+            return -1;
         }
     }
 }
