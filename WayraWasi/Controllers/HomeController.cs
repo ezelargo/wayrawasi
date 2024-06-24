@@ -6,7 +6,7 @@ using WayraWasi.Models;
 
 namespace WayraWasi.Controllers
 {
-    [Authorize] // Se utiliza para restringir el acceso a los controladores o acciones a usuarios autenticados
+    [Authorize(Roles = "Administrador")] // Se restringe el acceso solo al administrador
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger; // Este es el login que viene por defecto en el programa
@@ -34,7 +34,8 @@ namespace WayraWasi.Controllers
             var disponibilidad = await _homeRepository.ListarDisponibilidadPorFecha(fechaInicio, fechaFin);
             return View(disponibilidad);
         }
-        
+
+        [AllowAnonymous] // Permite acceder a cualquier tipo de usuario
         public IActionResult Privacy()
         {
             return View();

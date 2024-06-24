@@ -27,21 +27,16 @@ namespace WayraWasi
             .AddEntityFrameworkStores<DBDapperContext>()
             .AddDefaultTokenProviders();
 
-            builder.Services.AddSession(options =>
-            {
-                options.IdleTimeout = TimeSpan.FromMinutes(30);
-                options.Cookie.HttpOnly = true;
-                options.Cookie.IsEssential = true;
-            });
-
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
                 {
-                    options.LoginPath = "/Usuarios/Login";
-                    options.LogoutPath = "/Usuarios/Logout";
+                    options.LoginPath = "/Account/Login";
+                    options.LogoutPath = "/Account/Logout";
+                    options.AccessDeniedPath = "/Home/Privacy";
+                    options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+                    options.Cookie.HttpOnly = true;
+                    options.Cookie.IsEssential = true;
                 });
-
-
 
             builder.Services.AddControllersWithViews()
                 .AddFluentValidation(fv =>

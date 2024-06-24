@@ -1,6 +1,23 @@
 ﻿@{
-    ViewData["Title"] = "Privacy Policy";
+    ViewBag.Title = "Política de Privacidad";
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+<h1>Política de Privacidad: Acceso Restringido a Administradores</h1>
+
+<h2>Propósito</h2>
+<p>Esta política de privacidad tiene como objetivo explicar las restricciones de acceso al sitio web para usuarios que no sean administradores.</p>
+
+<h2>Acceso Restringido</h2>
+<p>El acceso a ciertas secciones y funcionalidades del sitio web está restringido a usuarios con roles específicos, como administradores. Los usuarios que intenten acceder a estas áreas sin los permisos adecuados serán redirigidos a la página de privacidad.</p>
+
+<h2>Redirección de Acceso Denegado</h2>
+<p>Cuando un usuario intenta acceder a una página o funcionalidad protegida sin los privilegios adecuados, será redirigido automáticamente a la página de privacidad. Esta medida se implementa para garantizar la seguridad y la integridad de los datos sensibles del sitio web.</p>
+
+<h2>Contacto</h2>
+<p>Si tiene alguna pregunta o inquietud sobre nuestra política de acceso restringido, no dude en contactarnos a través de nuestros canales de atención al cliente.</p>
+
+<p>
+    <form asp-action="Logout" asp-controller="Account" method="post" id="logoutForm" class="form-inline">
+        <button type="submit" class="btn btn-info">Volver al inicio de sesion</button>
+    </form>
+</p>

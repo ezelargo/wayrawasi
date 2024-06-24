@@ -13,7 +13,7 @@ using WayraWasi.Models;
 
 namespace WayraWasi.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Administrador")]
     public class ReservasController : Controller
     {
         private readonly ILogger<ReservasController> _logger;
@@ -38,6 +38,7 @@ namespace WayraWasi.Controllers
         public async Task<ActionResult> Details(int id)
         {
             var reserva = await _repository.BuscadorId(id);
+            
             return View(reserva);
         }
 
@@ -50,9 +51,14 @@ namespace WayraWasi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> GenerarReporteReservas(DateTime fechaInicio, DateTime fechaFin)
         {
-            var reserva = await _repository.GenerarReservaPorFecha(fechaInicio, fechaFin);
+            var reservas = await _repository.GenerarReservaPorFecha(fechaInicio, fechaFin);
+            
+            foreach(var reserva in reservas)
+            {
+                ActualizarEstadoReserva(reserva);
+            }
 
-            var pdf = GenerarReportePDF(reserva);
+            var pdf = GenerarReportePDF(reservas);
 
             return File(pdf, "application/pdf", "Reportes de Reservas.pdf");
         }
@@ -93,6 +99,26 @@ namespace WayraWasi.Controllers
                 }
                 return stream.ToArray();
             }
+        }
+
+        private async Task ActualizarEstadoReserva(Reserva reserva)
+        {
+            var fechaActual = DateTime.Now;
+
+            if (fechaActual < reserva.FechaEntrada)
+            {
+                reserva.Estado = "Reservado";
+            }
+            else if (fechaActual >= reserva.FechaEntrada && fechaActual < reserva.FechaSalida)
+            {
+                reserva.Estado = "Check-In Finalizado";
+            }
+            else if (fechaActual >= reserva.FechaSalida)
+            {
+                reserva.Estado = "Check-Out Finalizado";
+            }
+
+            await _repository.ActualizarReservas(reserva);
         }
 
         // GET: ReservasController/Create

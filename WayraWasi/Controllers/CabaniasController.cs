@@ -6,7 +6,7 @@ using WayraWasi.Models;
 
 namespace WayraWasi.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Administrador")]
     public class CabaniasController : Controller
     {
         private readonly ILogger<CabaniasController> _logger;

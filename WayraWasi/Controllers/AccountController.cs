@@ -6,13 +6,15 @@ namespace WayraWasi.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly SignInManager<IdentityUser> _signInManager;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly SignInManager<IdentityUser> _signInManager; // Manejo en el inicio de sesion del programa.
+        private readonly UserManager<IdentityUser> _userManager; // Manejo a la hora de registrar un usuario en programa
+        private readonly RoleManager<IdentityRole> _rolUser; // Manejo de roles en el programa
 
-        public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+        public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, RoleManager<IdentityRole> rolUser)
         {
             _signInManager = signInManager;
             _userManager = userManager;
+            _rolUser = rolUser;
         }
 
         /* Solo se le mostrara una pagina para logearse en la cual tambien podra registrase */
@@ -30,9 +32,20 @@ namespace WayraWasi.Controllers
             {
                 var usuario = new IdentityUser { UserName = modelo.Email, Email = modelo.Email };
                 var resultado = await _userManager.CreateAsync(usuario, modelo.Password);
+
                 if (resultado.Succeeded)
                 {
-                    await _signInManager.SignInAsync(usuario, isPersistent: false);
+                    if (!await _rolUser.RoleExistsAsync("Administrador")) // Veo si existe un usuario admin sino lo agrego
+                    {
+                        var Admin = new IdentityRole("Administrador");
+                        await _rolUser.CreateAsync(Admin);
+                    }
+                    if(_userManager.Users.Count() == 1) // Solo un usuario es el Admin, donde sea el primero que nosotros creemos
+                    {
+                        await _userManager.AddToRoleAsync(usuario, "Administrador"); // Asigno el Rol administrador a mi usuario
+                    }
+
+                    await _signInManager.SignInAsync(usuario, isPersistent: false);             
                     return RedirectToAction("Index", "Home");
                 }
                 foreach (var error in resultado.Errors)
@@ -72,7 +85,12 @@ namespace WayraWasi.Controllers
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Login", "Account");
+        }
+
+        public IActionResult AccessDenied(string returnUrl)
+        {
+            return RedirectToAction("Privacy", "Home");
         }
 
         private IActionResult Redireccionar(string returnUrl)

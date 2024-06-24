@@ -69,6 +69,13 @@ namespace WayraWasi.Data.Implementations
                                                             commandType: CommandType.StoredProcedure);
             }
         }
+        public async Task<int> ActualizarReservas(Reserva reserva)
+        {
+            using (var conexionD = _conexionDapper.GetConnection())
+            {
+                return await conexionD.ExecuteAsync("spActualizarReserva", new { reserva.Estado, reserva.IdReservacion }, commandType: CommandType.StoredProcedure);
+            }
+        }
 
         public async Task<int> Crear(Reserva modelo) // Una vez que se pasaron los datos se hace esta creacion
         {
