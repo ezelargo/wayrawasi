@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using WayraWasi.Models;
 using WayraWasi.ViewModels;
 
 namespace WayraWasi.Controllers
@@ -9,12 +12,16 @@ namespace WayraWasi.Controllers
         private readonly SignInManager<IdentityUser> _signInManager; // Manejo en el inicio de sesion del programa.
         private readonly UserManager<IdentityUser> _userManager; // Manejo a la hora de registrar un usuario en programa
         private readonly RoleManager<IdentityRole> _rolUser; // Manejo de roles en el programa
+        private readonly IValidator<LoginViewModel> _validatorLogin;
+        private readonly IValidator<RegisterViewModel> _validatorRegister;
 
-        public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, RoleManager<IdentityRole> rolUser)
+        public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, RoleManager<IdentityRole> rolUser, IValidator<LoginViewModel> validatorLogin, IValidator<RegisterViewModel> validatorRegister)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _rolUser = rolUser;
+            _validatorLogin = validatorLogin;
+            _validatorRegister = validatorRegister;
         }
 
         /* Solo se le mostrara una pagina para logearse en la cual tambien podra registrase */
@@ -65,8 +72,22 @@ namespace WayraWasi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel modelo, string returnUrl = null)
         {
-            if (ModelState.IsValid)
+            var validationResult = await _validatorLogin.ValidateAsync(modelo);
+
+            if (!validationResult.IsValid)
             {
+                foreach (var error in validationResult.Errors)
+                {
+                    if (!ModelState.ContainsKey(error.PropertyName) || ModelState[error.PropertyName]?.Errors.All(e => e.ErrorMessage != error.ErrorMessage) == true) // Solo se muestra una vez el error
+                    {
+                        ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+                    }
+                }
+                return View(modelo);
+            }
+
+            if (ModelState.IsValid) {
+
                 var resultado = await _signInManager.PasswordSignInAsync(modelo.Email, modelo.Password, modelo.RememberMe, lockoutOnFailure: false);
                 if (resultado.Succeeded)
                 {
@@ -74,10 +95,10 @@ namespace WayraWasi.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, " Su email o su contraseña son incorrectos.");
                     return View(modelo);
                 }
             }
+
             return View(modelo);
         }
 

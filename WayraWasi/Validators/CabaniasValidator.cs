@@ -5,7 +5,7 @@ using WayraWasi.Models;
 
 namespace WayraWasi.Validators
 {
-    public class CabaniasValidator : AbstractValidator<Cabania>
+    public class CabaniasValidator : AbstractValidator<Cabania> // Sirve para proporcionar una manera fácil de definir reglas de validación para un tipo específico
     {
         private readonly CabaniaRepository _repository;
         public CabaniasValidator(CabaniaRepository repository)

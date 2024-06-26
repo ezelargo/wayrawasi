@@ -1,15 +1,9 @@
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using System.Data;
 using WayraWasi.Data;
 using WayraWasi.Data.Implementations;
-using WayraWasi.Models;
 using WayraWasi.Validators;
 
 namespace WayraWasi
@@ -45,6 +39,10 @@ namespace WayraWasi
                     fv.RegisterValidatorsFromAssemblyContaining<CabaniasValidator>();
                     fv.RegisterValidatorsFromAssemblyContaining<LoginViewModelValidator>();
                     fv.RegisterValidatorsFromAssemblyContaining<RegisterViewModelValidator>();
+                })
+                .ConfigureApiBehaviorOptions(options =>
+                {
+                    options.SuppressModelStateInvalidFilter = true;
                 });
 
 
