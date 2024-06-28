@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using FluentValidation.Internal;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WayraWasi.Data.Implementations;
@@ -88,19 +89,12 @@ namespace WayraWasi.Controllers
                         ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
                     }
                 }
-
                 return View(cabania);
             }
 
-            try
-            {
-                await _repository.Editar(cabania);
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View(cabania);
-            }
+            await _repository.Editar(cabania);
+            return RedirectToAction("Index");
+
         }
 
         // GET: CabaniasController/Delete/5
@@ -110,7 +104,7 @@ namespace WayraWasi.Controllers
             if (cabania == null)
                 return NotFound();
 
-            var validationResult = await _validator.ValidateAsync(cabania);
+            var validationResult = await _validator.ValidateAsync(cabania, options => options.IncludeRuleSets("Eliminar")); // Esto sirve para utilizar solo reglas especificas cuando se tiene que eliminar una cabaña
 
             if (!validationResult.IsValid)
             {
@@ -121,7 +115,8 @@ namespace WayraWasi.Controllers
                         ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
                     }
                 }
-                return View(cabania);
+                var cabanias = await _repository.ListarTodos();
+                return View("Index", cabanias); // Le paso todas las cabañas mas los errores de validacion
             }
 
             return View(cabania);
@@ -133,7 +128,7 @@ namespace WayraWasi.Controllers
         public async Task<IActionResult> DeleteConfirmation(int id)
         {
             try
-            {                
+            {
                 await _repository.Eliminar(id);
                 return RedirectToAction("Index");
             }

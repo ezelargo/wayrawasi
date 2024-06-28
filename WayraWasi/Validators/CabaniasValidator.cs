@@ -12,22 +12,28 @@ namespace WayraWasi.Validators
         {
             _repository = repository;
 
+            RuleSet("Eliminar", () =>
+            {
+                RuleFor(c => c)
+                .Must(CabañaReservada)
+                .WithMessage("La cabaña se encuentra reservada. En caso de querer eliminarla primero elimine las reservas asignadas a la misma.");
+            });
+
             RuleFor(c => c.NombreCabania)
             .NotEmpty().WithMessage("El nombre de la cabaña es obligatorio.")
             .MaximumLength(50).WithMessage("El nombre de la cabaña no puede exceder los 50 caracteres.")
             .Must(NombreUnico).WithMessage("El nombre de la cabaña ya existe.");
-                
+
             RuleFor(c => c.Descripcion).NotEmpty().WithMessage("La descripción es obligatoria.");
             RuleFor(c => c.Capacidad).GreaterThan(0).WithMessage("La capacidad debe ser mayor a cero.");
             RuleFor(c => c.PrecioNoche).GreaterThan(0).WithMessage("El precio por noche debe ser mayor a cero.");
 
-            RuleFor(c => c)
-            .Must(CabañaReservada).WithMessage("La cabaña se encuentra reservada. Si la elimina tambien se eliminaran todas las reservas asignadas a la cabaña.");
+
 
         }
-        private  bool NombreUnico(string nombreCabania)
+        private bool NombreUnico(Cabania cabania, string nombreCabania) // Los tipos como cabania se toman automaticamente a la hora de comprobar los validadores
         {
-            var NombreExistente = _repository.BuscarPorNombre(nombreCabania).Result;
+            var NombreExistente = _repository.BuscarPorNombre(nombreCabania, cabania.IdCabania).Result;
             return NombreExistente == null;
         }
 

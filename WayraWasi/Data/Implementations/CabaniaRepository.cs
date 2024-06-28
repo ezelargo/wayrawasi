@@ -31,12 +31,12 @@ namespace WayraWasi.Data.Implementations
                                                                          commandType: CommandType.StoredProcedure);
             }
         }
-        public async Task<Cabania> BuscarPorNombre(string nombre)
+        public async Task<Cabania> BuscarPorNombre(string nombre,int id)
         {
             using (var conexionD = _conexionDapper.GetConnection())
             {
                 return await conexionD.QueryFirstOrDefaultAsync<Cabania>("sp_BuscarCabaniaPorNombre",
-                                                                          new { NombreCabania = nombre },
+                                                                          new { NombreCabania = nombre , Id = id },
                                                                           commandType: CommandType.StoredProcedure);
             }
         }
@@ -63,9 +63,10 @@ namespace WayraWasi.Data.Implementations
                                                             modelo.Capacidad,
                                                             modelo.PrecioNoche
                                                         }, commandType: CommandType.StoredProcedure);
-                                                        }
+                }
             }
-            catch (Exception ex) { 
+            catch (Exception ex)
+            {
                 Console.WriteLine(ex.ToString());
                 throw;
             }
@@ -92,8 +93,8 @@ namespace WayraWasi.Data.Implementations
             using (var conexionD = _conexionDapper.GetConnection())
             {
                 return await conexionD.ExecuteAsync("sp_EliminarCabania",
-            new { IdCabania = id },
-            commandType: CommandType.StoredProcedure);
+                                                    new { IdCabania = id },
+                                                    commandType: CommandType.StoredProcedure);
             }
         }
     }

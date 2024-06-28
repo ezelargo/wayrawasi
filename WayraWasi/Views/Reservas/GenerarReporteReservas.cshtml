@@ -18,6 +18,7 @@
         @Html.TextBox("fechaFin", null, new { @class = "form-control", type = "date" })
     </div>
     <button type="submit" class="btn btn-primary">Generar Reporte</button>
+    <a href="@Url.Action("Index")" class="btn btn-primary">Volver a la Lista</a>
 }
 @section Scripts {
     @{
