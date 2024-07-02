@@ -6,7 +6,7 @@ namespace WayraWasi.Data
     public interface IReservasRepository
     {
         Task<Reserva> BuscadorId(int id);
-        Task<Cabania> BuscarPorIDCabania(int id);        
+        Task<Cabania> BuscarPorIDCabania(int id);
         Task<IEnumerable<Reserva>> ListarTodos();
         Task<IEnumerable<Cabania>> ListarCabanias();
         Task<bool> BuscarCabaniaDisponibilidad(Reserva modelo, DateTime? fechaInicio, DateTime? fechaFin);

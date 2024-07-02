@@ -15,7 +15,8 @@ namespace WayraWasi.Data
             _connectionDapper = configuration.GetConnectionString("DBConnection");
         }
         // Crea una nueva conexión a la base de datos por cada solicitud HTTP, y evita compartir conexiones con otras solicitudes.
-        public IDbConnection GetConnection(){
+        public IDbConnection GetConnection()
+        {
             var connection = new SqlConnection(_connectionDapper);
             connection.Open();
             return connection;

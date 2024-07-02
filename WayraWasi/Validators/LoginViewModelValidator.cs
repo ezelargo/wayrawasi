@@ -5,7 +5,7 @@ namespace WayraWasi.Validators
 {
     public class LoginViewModelValidator : AbstractValidator<LoginViewModel>
     {
-        public LoginViewModelValidator() 
+        public LoginViewModelValidator()
         {
             RuleFor(l => l.Email).NotEmpty().WithMessage("El correo electronico es obligatorio")
                 .EmailAddress().WithMessage("El formato del correo no es correcto");

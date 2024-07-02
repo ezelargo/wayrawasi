@@ -1,81 +1,102 @@
 ﻿@model IEnumerable<WayraWasi.Models.Cabania>
 
 @{
-    ViewBag.Title = "Listado de Cabañas";
+    ViewBag.Title = "Cabañas";
 }
 
-<h2>Listado de Cabañas</h2>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Wayra Wasi</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">    
+</head>
+<body>
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mt-4 mb-3">
+        <h2 class="d-inline">Cabañas</h2>
+        <a href="@Url.Action("Create")" class="btn btn-primary">
+            Nueva cabaña <i class="bi bi-plus"></i>
+        </a>
+        </div>
+        @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
 
-@Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
-
-<p>
-    <a href="@Url.Action("Create")" class="btn btn-primary">Crear Nueva Cabaña</a>
-</p>
-<table id="cabaniasTable" class="table table-striped">
-    <thead>
-        <tr>
-            <th>Nombre de la cabaña</th>
-            <th>Descripcion</th>
-            <th>Capacidad</th>
-            <th>Precio por noche</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@Html.DisplayFor(modelItem => item.NombreCabania)</td>
-                <td>@Html.DisplayFor(modelItem => item.Descripcion)</td>
-                <td>@Html.DisplayFor(modelItem => item.Capacidad)</td>
-                <td>@Html.DisplayFor(modelItem => item.PrecioNoche)</td>
-                <td>
-                    <a href="@Url.Action("Edit", new { id = item.IdCabania })" class="btn btn-warning">Editar</a>
-                    <a href="@Url.Action("Details", new { id = item.IdCabania })" class="btn btn-info">Detalles</a>
-                    <a href="@Url.Action("Delete", new { id = item.IdCabania })" class="btn btn-danger">Eliminar</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
-
-@section Scripts {
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css">
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
-
-    <script>
-        $(document).ready(function () {
-            $('#cabaniasTable').DataTable({
-                language: {
-                    "decimal": "",
-                    "emptyTable": "No hay datos disponibles en la tabla",
-                    "info": "Mostrando _START_ a _END_ de _TOTAL_ cabañas",
-                    "infoEmpty": "Mostrando 0 a 0 de 0 cabañas",
-                    "infoFiltered": "(filtrado de _MAX_ cabañas totales)",
-                    "infoPostFix": "",
-                    "thousands": ",",
-                    "lengthMenu": "Mostrar _MENU_ cabañas",
-                    "loadingRecords": "Cargando...",
-                    "processing": "Procesando...",
-                    "search": "Buscar:",
-                    "zeroRecords": "No se encontraron registros coincidentes",
-                    "paginate": {
-                        "first": "Primero",
-                        "last": "Último",
-                        "next": "Siguiente",
-                        "previous": "Anterior"
-                    },
-                    "aria": {
-                        "sortAscending": ": activar para ordenar la columna ascendente",
-                        "sortDescending": ": activar para ordenar la columna descendente"
-                    }
+        <table id="cabaniasTable" class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Nombre de la cabaña</th>
+                    <th>Descripcion</th>
+                    <th>Capacidad</th>
+                    <th>Precio por noche</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.NombreCabania)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Descripcion)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Capacidad)</td>
+                        <td>@Html.DisplayFor(modelItem => item.PrecioNoche)</td>
+                        <td>
+                            <a href="@Url.Action("Edit", new { id = item.IdCabania })" class="btn btn-warning">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a href="@Url.Action("Details", new { id = item.IdCabania })" class="btn btn-info">
+                                <i class="bi bi-list"></i>
+                            </a>
+                            <a href="@Url.Action("Delete", new { id = item.IdCabania })" class="btn btn-danger">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
                 }
-            });
-        });
-    </script>
+            </tbody>
+        </table>
+    </div>
 
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    @section Scripts {
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css">
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
+
+        <script>
+            $(document).ready(function () {
+                $('#cabaniasTable').DataTable({
+                    language: {
+                        "decimal": "",
+                        "emptyTable": "No hay datos disponibles en la tabla",
+                        "info": "Mostrando _START_ a _END_ de _TOTAL_ cabañas",
+                        "infoEmpty": "Mostrando 0 a 0 de 0 cabañas",
+                        "infoFiltered": "(filtrado de _MAX_ cabañas totales)",
+                        "infoPostFix": "",
+                        "thousands": ",",
+                        "lengthMenu": "Mostrar _MENU_ cabañas",
+                        "loadingRecords": "Cargando...",
+                        "processing": "Procesando...",
+                        "search": "Buscar:",
+                        "zeroRecords": "No se encontraron registros coincidentes",
+                        "paginate": {
+                            "first": "Primero",
+                            "last": "Último",
+                            "next": "Siguiente",
+                            "previous": "Anterior"
+                        },
+                        "aria": {
+                            "sortAscending": ": activar para ordenar la columna ascendente",
+                            "sortDescending": ": activar para ordenar la columna descendente"
+                        }
+                    }
+                });
+            });
+        </script>
+
+        @{
+            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        }
     }
-}
+</body>
+</html>

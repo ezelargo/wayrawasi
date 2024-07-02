@@ -34,7 +34,7 @@ namespace WayraWasi.Data.Implementations
         {
             using (var conexionD = _conexionDapper.GetConnection())
             {
-                return await conexionD.QueryAsync<Reserva, Cabania, Reserva>("sp_ListarReservas", 
+                return await conexionD.QueryAsync<Reserva, Cabania, Reserva>("sp_ListarReservas",
                                                                             (reserva, cabania) => { reserva.Cabania = cabania; return reserva; },
                                                                             splitOn: "IdCabania",
                                                                             commandType: CommandType.StoredProcedure);
@@ -48,13 +48,13 @@ namespace WayraWasi.Data.Implementations
                 return await conexionD.QueryAsync<Cabania>("sp_ListarCabanias", commandType: CommandType.StoredProcedure);
             }
         }
-        
-        public async Task<bool> BuscarCabaniaDisponibilidad(Reserva reserva,DateTime? fechaInicio, DateTime? fechaFin)
+
+        public async Task<bool> BuscarCabaniaDisponibilidad(Reserva reserva, DateTime? fechaInicio, DateTime? fechaFin)
         {
             using (var conexionD = _conexionDapper.GetConnection())
             {
                 // Esta consulta compara si la fecha de entrada coincide en el rango de fechas entre la entrada o la salida de alguna reserva y lo mismo para la Fecha de Salida. Teniendo asi que ni la entrada ni la salida se solapan con otra reserva.
-                return await conexionD.QueryFirstOrDefaultAsync<bool>("sp_BuscarDisponibilidadCabania", 
+                return await conexionD.QueryFirstOrDefaultAsync<bool>("sp_BuscarDisponibilidadCabania",
                                                                         new { FechaEntrada = fechaInicio, FechaSalida = fechaFin, IdCabania = reserva.IdCabania, IdReserva = reserva.IdReservacion },
                                                                         commandType: CommandType.StoredProcedure);
             }

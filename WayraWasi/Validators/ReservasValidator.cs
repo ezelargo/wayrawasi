@@ -46,7 +46,7 @@ namespace WayraWasi.Validators
         private bool CapacidadMaxima(Reserva reserva, int numeroPersonas)
         {
             var cabania = _repository.BuscarPorIDCabania(reserva.IdCabania).Result;
-            if(cabania == null)
+            if (cabania == null)
             {
                 return false;
             }
@@ -55,8 +55,8 @@ namespace WayraWasi.Validators
 
         private long ObtenerCapacidadCabania(int idCabania)
         {
-                Cabania cabaniaCapacidad = _repository.BuscarPorIDCabania(idCabania).Result;
-                return cabaniaCapacidad.Capacidad;
+            Cabania cabaniaCapacidad = _repository.BuscarPorIDCabania(idCabania).Result;
+            return cabaniaCapacidad.Capacidad;
         }
     }
 }

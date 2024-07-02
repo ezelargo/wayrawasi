@@ -31,12 +31,12 @@ namespace WayraWasi.Data.Implementations
                                                                          commandType: CommandType.StoredProcedure);
             }
         }
-        public async Task<Cabania> BuscarPorNombre(string nombre,int id)
+        public async Task<Cabania> BuscarPorNombre(string nombre, int id)
         {
             using (var conexionD = _conexionDapper.GetConnection())
             {
                 return await conexionD.QueryFirstOrDefaultAsync<Cabania>("sp_BuscarCabaniaPorNombre",
-                                                                          new { NombreCabania = nombre , Id = id },
+                                                                          new { NombreCabania = nombre, Id = id },
                                                                           commandType: CommandType.StoredProcedure);
             }
         }

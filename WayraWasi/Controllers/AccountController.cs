@@ -47,12 +47,12 @@ namespace WayraWasi.Controllers
                         var Admin = new IdentityRole("Administrador");
                         await _rolUser.CreateAsync(Admin);
                     }
-                    if(_userManager.Users.Count() == 1) // Solo un usuario es el Admin, donde sea el primero que nosotros creemos
+                    if (_userManager.Users.Count() == 1) // Solo un usuario es el Admin, donde sea el primero que nosotros creemos
                     {
                         await _userManager.AddToRoleAsync(usuario, "Administrador"); // Asigno el Rol administrador a mi usuario
                     }
 
-                    await _signInManager.SignInAsync(usuario, isPersistent: false);             
+                    await _signInManager.SignInAsync(usuario, isPersistent: false);
                     return RedirectToAction("Index", "Home");
                 }
                 foreach (var error in resultado.Errors)
@@ -86,7 +86,8 @@ namespace WayraWasi.Controllers
                 return View(modelo);
             }
 
-            if (ModelState.IsValid) {
+            if (ModelState.IsValid)
+            {
 
                 var resultado = await _signInManager.PasswordSignInAsync(modelo.Email, modelo.Password, modelo.RememberMe, lockoutOnFailure: false);
                 if (resultado.Succeeded)

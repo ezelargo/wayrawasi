@@ -38,7 +38,7 @@ namespace WayraWasi.Controllers
         public async Task<ActionResult> Details(int id)
         {
             var reserva = await _repository.BuscadorId(id);
-            
+
             return View(reserva);
         }
 
@@ -52,8 +52,8 @@ namespace WayraWasi.Controllers
         public async Task<IActionResult> GenerarReporteReservas(DateTime fechaInicio, DateTime fechaFin)
         {
             var reservas = await _repository.GenerarReservaPorFecha(fechaInicio, fechaFin);
-            
-            foreach(var reserva in reservas)
+
+            foreach (var reserva in reservas)
             {
                 ActualizarEstadoReserva(reserva);
             }
@@ -192,7 +192,7 @@ namespace WayraWasi.Controllers
                 ViewBag.CabaniaSeleccionada = cabania;
                 ViewBag.Cabanias = await _repository.ListarCabanias();
                 return View(reserva);
-            }       
+            }
 
             await _repository.Editar(reserva);
             return RedirectToAction("Index");

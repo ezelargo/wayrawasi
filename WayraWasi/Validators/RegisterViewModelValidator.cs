@@ -5,7 +5,7 @@ namespace WayraWasi.Validators
 {
     public class RegisterViewModelValidator : AbstractValidator<RegisterViewModel>
     {
-        public RegisterViewModelValidator() 
+        public RegisterViewModelValidator()
         {
             RuleFor(r => r.Email).NotEmpty().WithMessage("El correo electronico es obligatorio")
                 .EmailAddress().WithMessage("El formato del correo no es correcto");
