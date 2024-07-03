@@ -36,7 +36,7 @@
             @using (Html.BeginForm("DeleteConfirmation", "Cabanias", new { id = Model.IdCabania }, FormMethod.Post))
             {
                 @Html.AntiForgeryToken()
-                <div class="form-actions no-color">
+                <div class="col-md-10 ms-auto text-end">
                     <input type="submit" value="Eliminar" class="btn btn-danger" /> |
                     <a href="@Url.Action("Index")" class="btn btn-primary">Volver</a>
                 </div>

@@ -2,6 +2,9 @@
 
 @{
     ViewBag.Title = "Disponibilidad de Cabañas";
+    var fechaInicio = ViewBag.FechaInicio != null ? ViewBag.FechaInicio.ToString("yyyy-MM-ddTHH:mm") : string.Empty;
+    var fechaFin = ViewBag.FechaFin != null ? ViewBag.FechaFin.ToString("yyyy-MM-ddTHH:mm") : string.Empty;
+    var fechaMinima = DateTime.Today.ToString("yyyy-MM-ddTHH:mm");
 }
 
 <!DOCTYPE html>
@@ -23,11 +26,13 @@
         {
             <div class="form-group">
                 <label for="fechaInicio">Fecha de Inicio:</label>
-                <input type="date" id="fechaInicio" name="fechaInicio" class="form-control" required />
+                <input type="datetime-local" id="fechaInicio" name="fechaInicio" class="form-control" value="@fechaInicio" min="@fechaMinima" required /> 
+                <!-- El fecha inicio se mostrara completo en caso de tener un valor o de lo contrario estara vacio-->
+                <!-- La fecha minima solo dejara implementar busquedas a partir de dias posteriores al actual -->
             </div>
             <div class="form-group ml-2">
                 <label for="fechaFin">Fecha de Fin:</label>
-                <input type="date" id="fechaFin" name="fechaFin" class="form-control" required />
+                <input type="datetime-local" id="fechaFin" name="fechaFin" class="form-control" value="@fechaFin" min="@fechaMinima" required />
             </div>
             <button type="submit" class="btn btn-primary ml-2">Ver Disponibilidad</button>
             <a href="@Url.Action("Index")" class="btn btn-primary ml-2">Volver</a>

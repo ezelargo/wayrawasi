@@ -32,14 +32,24 @@ namespace WayraWasi.Controllers
         public async Task<IActionResult> Disponibilidad(DateTime fechaInicio, DateTime fechaFin)
         {
             var disponibilidad = await _homeRepository.ListarDisponibilidadPorFecha(fechaInicio, fechaFin);
+            ViewBag.FechaInicio = fechaInicio;
+            ViewBag.FechaFin = fechaFin;
             return View(disponibilidad);
         }
 
-        [AllowAnonymous] // Permite acceder a cualquier tipo de usuario
+        [AllowAnonymous] // Permite acceder a cualquier tipo de usuario solo a esta funcion
         public IActionResult Privacy()
         {
             return View();
         }
+
+
+        [Route("/Home/Error/{code:int}")]
+        public IActionResult Error(int codigo) {
+
+            return View(new ErrorViewModel { RequestId = "404", ErrorMessage = $"Ocurrio un error, Codigo de Error {codigo}"});
+        }
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
