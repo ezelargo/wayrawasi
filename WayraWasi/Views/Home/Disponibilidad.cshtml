@@ -1,10 +1,10 @@
-﻿@model IEnumerable<WayraWasi.Models.Cabania>
+﻿@model IEnumerable<WayraWasi.ViewModels.DisponibilidadViewModel>
 
 @{
     ViewBag.Title = "Disponibilidad de Cabañas";
-    var fechaInicio = ViewBag.FechaInicio != null ? ViewBag.FechaInicio.ToString("yyyy-MM-ddTHH:mm") : string.Empty;
-    var fechaFin = ViewBag.FechaFin != null ? ViewBag.FechaFin.ToString("yyyy-MM-ddTHH:mm") : string.Empty;
-    var fechaMinima = DateTime.Today.ToString("yyyy-MM-ddTHH:mm");
+    var fechaInicio = ViewBag.FechaInicio != null ? ViewBag.FechaInicio.ToString("dd-MM-yyyy") : string.Empty;
+    var fechaFin = ViewBag.FechaFin != null ? ViewBag.FechaFin.ToString("dd-MM-yyyy") : string.Empty;
+    var fechaMinima = DateTime.Today.ToString("yyyy-MM-dd");
 }
 
 <!DOCTYPE html>
@@ -26,28 +26,29 @@
         {
             <div class="form-group">
                 <label for="fechaInicio">Fecha de Inicio:</label>
-                <input type="datetime-local" id="fechaInicio" name="fechaInicio" class="form-control" value="@fechaInicio" min="@fechaMinima" required /> 
-                <!-- El fecha inicio se mostrara completo en caso de tener un valor o de lo contrario estara vacio-->
-                <!-- La fecha minima solo dejara implementar busquedas a partir de dias posteriores al actual -->
+                <input type="date" id="fechaInicio" name="fechaInicio" class="form-control" value="@fechaInicio" min="@fechaMinima" required />
+                <!-- El fecha inicio se mostrará completo en caso de tener un valor o de lo contrario estará vacío -->
+                <!-- La fecha mínima solo permitirá implementar búsquedas a partir de días posteriores al actual -->
             </div>
             <div class="form-group ml-2">
                 <label for="fechaFin">Fecha de Fin:</label>
-                <input type="datetime-local" id="fechaFin" name="fechaFin" class="form-control" value="@fechaFin" min="@fechaMinima" required />
+                <input type="date" id="fechaFin" name="fechaFin" class="form-control" value="@fechaFin" min="@fechaMinima" required />
             </div>
             <button type="submit" class="btn btn-primary ml-2">Ver Disponibilidad</button>
             <a href="@Url.Action("Index")" class="btn btn-primary ml-2">Volver</a>
         }
 
-        @if (Model != null)
+        @if (Model != null && Model.Any())
         {
-            <h3>Disponibilidad del @ViewBag.FechaInicio al @ViewBag.FechaFin</h3>
+            <h3>Disponibilidad del @fechaInicio al @fechaFin</h3>
             <table id="disponibilidadTable" class="table table-striped table-bordered">
                 <thead>
                     <tr>
                         <th>Nombre</th>
-                        <th>Descripción</th>
+                        <th>Reservado por</th>
                         <th>Capacidad</th>
                         <th>Precio por Noche</th>
+                        <th>Precio Total</th>
                         <th>Disponibilidad</th>
                         <th>Acciones</th>
                     </tr>
@@ -57,21 +58,22 @@
                     {
                         <tr>
                             <td>@cabania.NombreCabania</td>
-                            <td>@cabania.Descripcion</td>
-                            <td>@cabania.Capacidad</td>
-                            <td>@cabania.PrecioNoche</td>
+                            <td>@cabania.ReservadoPor</td>
+                            <td>@cabania.CantidadPersonas</td>
+                            <td>@cabania.PrecioNoche.ToString("C")</td>
+                            @if (@cabania.PrecioTotal == 0)
+                            {
+                                <td>
+                                    No reservado
+                                </td>
+                            }
+                            else
+                            {
+                                <td>
+                                    @cabania.PrecioTotal.ToString("C")
+                                </td>
+                            }
                             <td>@cabania.Disponibilidad</td>
-                            <td>
-                                <a href="@Url.Action("Edit", new { id = cabania.IdCabania })" class="btn btn-warning">
-                                    <i class="bi bi-pencil-square"></i>
-                                </a>
-                                <a href="@Url.Action("Details", new { id = cabania.IdCabania })" class="btn btn-info">
-                                    <i class="bi bi-list"></i>
-                                </a>
-                                <a href="@Url.Action("Delete", new { id = cabania.IdCabania })" class="btn btn-danger">
-                                    <i class="bi bi-trash"></i>
-                                </a>
-                            </td>
                         </tr>
                     }
                 </tbody>
@@ -80,8 +82,8 @@
     </div>
     @section Scripts {
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css">
         <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-2xsrpxyu5v/rdJC3Y6Aycs6Tm5v60/KA9vlKNzxzvHtc6QF5TO4HpqS1uV6QpHp" crossorigin="anonymous"></script>
 
         <script>
             $(document).ready(function () {
@@ -113,10 +115,6 @@
                 });
             });
         </script>
-
-        @{
-            await Html.RenderPartialAsync("_ValidationScriptsPartial");
-        }
     }
 </body>
 </html>

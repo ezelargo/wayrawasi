@@ -150,6 +150,10 @@ namespace WayraWasi.Controllers
                 return View(reserva);
             }
 
+            //Se le añade a la fecha elegida el horario definido por la cabaña
+            reserva.FechaEntrada = reserva.FechaEntrada.Value.Date.Add(cabania.CheckIn);
+            reserva.FechaSalida = reserva.FechaSalida.Value.Date.Add(cabania.CheckOut);
+
             await _repository.Crear(reserva);
             return RedirectToAction("Index");
         }
@@ -193,6 +197,9 @@ namespace WayraWasi.Controllers
                 ViewBag.Cabanias = await _repository.ListarCabanias();
                 return View(reserva);
             }
+
+            reserva.FechaEntrada = reserva.FechaEntrada.Value.Date.Add(cabania.CheckIn);
+            reserva.FechaSalida = reserva.FechaSalida.Value.Date.Add(cabania.CheckOut);
 
             await _repository.Editar(reserva);
             return RedirectToAction("Index");

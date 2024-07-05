@@ -18,6 +18,10 @@ namespace WayraWasi.Models
 
         public string? Disponibilidad { get; set; }
 
+        public TimeSpan CheckIn { get; set; }
+
+        public TimeSpan CheckOut { get; set; }
+
         public virtual ICollection<Reserva> Reservas { get; set; }
     }
 }

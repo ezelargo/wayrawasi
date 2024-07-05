@@ -61,7 +61,9 @@ namespace WayraWasi.Data.Implementations
                                                             modelo.NombreCabania,
                                                             modelo.Descripcion,
                                                             modelo.Capacidad,
-                                                            modelo.PrecioNoche
+                                                            modelo.PrecioNoche,
+                                                            modelo.CheckIn,
+                                                            modelo.CheckOut
                                                         }, commandType: CommandType.StoredProcedure);
                 }
             }
@@ -83,7 +85,9 @@ namespace WayraWasi.Data.Implementations
                 modelo.NombreCabania,
                 modelo.Descripcion,
                 modelo.Capacidad,
-                modelo.PrecioNoche
+                modelo.PrecioNoche,
+                modelo.CheckIn,
+                modelo.CheckOut
             }, commandType: CommandType.StoredProcedure);
             }
         }

@@ -25,7 +25,7 @@
             <div class="form-horizontal">
                 <hr />
                 <div class="form-group">
-                    @Html.LabelFor(model => model.NombreCabania,"Nombre de cabaña", htmlAttributes: new { @class = "control-label col-md-2" })
+                    @Html.LabelFor(model => model.NombreCabania, "Nombre de cabaña", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
                         @Html.EditorFor(model => model.NombreCabania, new { htmlAttributes = new { @class = "form-control" } })
                         @Html.ValidationMessageFor(model => model.NombreCabania, "", new { @class = "text-danger" })
@@ -53,6 +53,22 @@
                     <div class="col-md-10">
                         @Html.EditorFor(model => model.PrecioNoche, new { htmlAttributes = new { @class = "form-control" } })
                         @Html.ValidationMessageFor(model => model.PrecioNoche, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.CheckIn, "Hora de Check-In", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.CheckIn, new { htmlAttributes = new { @class = "form-control", type = "time" } })
+                        @Html.ValidationMessageFor(model => model.CheckIn, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.CheckOut, "Hora de Check-Out", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.CheckOut, new { htmlAttributes = new { @class = "form-control", type = "time" } })
+                        @Html.ValidationMessageFor(model => model.CheckOut, "", new { @class = "text-danger" })
                     </div>
                 </div>
 
