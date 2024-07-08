@@ -11,16 +11,20 @@ namespace WayraWasi.Controllers
     {
         private readonly ILogger<HomeController> _logger; // Este es el login que viene por defecto en el programa
         private readonly IHomeRepository _homeRepository;
+        private readonly IConfiguration _configuration;
 
-        public HomeController(ILogger<HomeController> logger, IHomeRepository homeRepository)
+        public HomeController(ILogger<HomeController> logger, IHomeRepository homeRepository,IConfiguration configuration)
         {
             _logger = logger; // Para que siempre este logeado con el usuario (En este caso de administrador)
             _homeRepository = homeRepository;
+            _configuration = configuration;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var dias = _configuration.GetValue<int>("ReservaIndex:DiasReservas");
+            var proximasReservas = await _homeRepository.ProximasReservas(dias);
+            return View(proximasReservas);
         }
 
         public IActionResult Disponibilidad()

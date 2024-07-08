@@ -6,5 +6,6 @@ namespace WayraWasi.Data
     public interface IHomeRepository
     {
         Task<IEnumerable<DisponibilidadViewModel>> ListarDisponibilidadPorFecha(DateTime fechaInicio, DateTime fechaFin);
+        Task<IEnumerable<Reserva>> ProximasReservas(int dias);
     }
 }

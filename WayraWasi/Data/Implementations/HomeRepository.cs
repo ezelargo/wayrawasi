@@ -26,5 +26,19 @@ namespace WayraWasi.Data.Implementations
                     commandType: CommandType.StoredProcedure); // Esta es la forma por la cual Dapper ingresa valores de busqueda para SQL
             }
         }
+
+        public async Task<IEnumerable<Reserva>> ProximasReservas(int dias)
+        {
+            using (var conexionD = _conexionDapper.GetConnection())
+            {
+                // Este es un mapeo que se utiliza para controlar multiples campos en estos casos de ver distintos datos se debe utilizar
+                return await conexionD.QueryAsync<Reserva, Cabania, Reserva>("ProximasReservas",
+                    (reserva, cabania) => { reserva.Cabania = cabania; return reserva; }                    
+                    , new { Dias = dias }
+                    , splitOn: "IdCabania" // El spliton indica el campo por donde se van a dividir los resultados
+                    , commandType: CommandType.StoredProcedure);
+            }
+        }
+
     }
 }

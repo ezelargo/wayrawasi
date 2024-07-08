@@ -5,7 +5,7 @@ using Dapper;
 
 namespace WayraWasi.Data.Implementations
 {
-    public class CabaniaRepository : ICabaniasRepository
+    public class CabaniaRepository : BaseRepository<Cabania>, ICabaniasRepository
     {
         private readonly DBDapperContext _conexionDapper;
 

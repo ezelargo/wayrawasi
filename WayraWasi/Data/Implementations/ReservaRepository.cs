@@ -5,7 +5,7 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace WayraWasi.Data.Implementations
 {
-    public class ReservaRepository : IReservasRepository
+    public class ReservaRepository : BaseRepository<Reserva>, IReservasRepository
     {
         private readonly DBDapperContext _conexionDapper;
 
