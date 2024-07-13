@@ -53,17 +53,22 @@ namespace WayraWasi.Controllers
         {
             var reservas = await _repository.GenerarReservaPorFecha(fechaInicio, fechaFin);
 
+            if (!reservas.Any())
+            {
+                return File(GenerarReportePDF(null, fechaInicio, fechaFin), "application/pdf", "Reportes de Reservas.pdf");
+            }
+
             foreach (var reserva in reservas)
             {
                 ActualizarEstadoReserva(reserva);
             }
 
-            var pdf = GenerarReportePDF(reservas);
+            var pdf = GenerarReportePDF(reservas, fechaInicio, fechaFin);
 
             return File(pdf, "application/pdf", "Reportes de Reservas.pdf");
         }
 
-        private byte[] GenerarReportePDF(IEnumerable<Reserva> reservas)
+        private byte[] GenerarReportePDF(IEnumerable<Reserva> reservas, DateTime fechaInicio, DateTime fechaFin)
         {
             using (var stream = new MemoryStream())
             {
@@ -76,25 +81,33 @@ namespace WayraWasi.Controllers
                     document.Add(new Paragraph($"Reporte generado el {DateTime.Now:yyyy-MM-dd}").SetTextAlignment(TextAlignment.CENTER).SetFontSize(18));
                     document.Add(new Paragraph("\n"));
 
-                    Table table = new Table(5, true);
-
-                    table.AddHeaderCell("Nombre Cliente");
-                    table.AddHeaderCell("Fecha Entrada");
-                    table.AddHeaderCell("Fecha Salida");
-                    table.AddHeaderCell("Nombre de cabaña");
-                    table.AddHeaderCell("Estado");
-
-                    foreach (var reserva in reservas)
+                    if (reservas == null || !reservas.Any())
                     {
-                        var cabania = _repository.BuscarPorIDCabania(reserva.IdCabania);
-                        table.AddCell(reserva.NombreCliente);
-                        table.AddCell(reserva.FechaEntrada.ToString());
-                        table.AddCell(reserva.FechaSalida.ToString());
-                        table.AddCell(cabania.Result.NombreCabania.ToString());
-                        table.AddCell(reserva.Estado);
+                        document.Add(new Paragraph($"No hay reservas desde {fechaInicio:yyyy-MM-dd} hasta {fechaFin:yyyy-MM-dd}.").SetTextAlignment(TextAlignment.CENTER).SetFontSize(16));
+                    }
+                    else
+                    {
+                        Table table = new Table(5, true);
+
+                        table.AddHeaderCell("Nombre Cliente");
+                        table.AddHeaderCell("Fecha Entrada");
+                        table.AddHeaderCell("Fecha Salida");
+                        table.AddHeaderCell("Nombre de cabaña");
+                        table.AddHeaderCell("Estado");
+
+                        foreach (var reserva in reservas)
+                        {
+                            var cabania = _repository.BuscarPorIDCabania(reserva.IdCabania);
+                            table.AddCell(reserva.NombreCliente);
+                            table.AddCell(reserva.FechaEntrada.ToString());
+                            table.AddCell(reserva.FechaSalida.ToString());
+                            table.AddCell(cabania.Result.NombreCabania.ToString());
+                            table.AddCell(reserva.Estado);
+                        }
+
+                        document.Add(table);
                     }
 
-                    document.Add(table);
                     document.Close();
                 }
                 return stream.ToArray();
