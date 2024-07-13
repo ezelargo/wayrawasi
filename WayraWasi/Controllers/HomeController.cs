@@ -36,6 +36,7 @@ namespace WayraWasi.Controllers
         [HttpPost]
         public async Task<IActionResult> Disponibilidad(DateTime fechaInicio, DateTime fechaFin)
         {
+            // Si la cabaña se encuentra en el horario entre la hora de checkIn y CheckOut de un dia a otro, se marcara como ocupado debido a que en ese tiempo no se puede reservar, ya sea para limpia, remodelar o cualquier otra cosa.
             var disponibilidad = await _homeRepository.ListarDisponibilidadPorFecha(fechaInicio, fechaFin);
             ViewBag.FechaInicio = fechaInicio;
             ViewBag.FechaFin = fechaFin;
