@@ -24,6 +24,7 @@ namespace WayraWasi.Controllers
         {
             var dias = _configuration.GetValue<int>("ReservaIndex:DiasReservas");
             var proximasReservas = await _homeRepository.ProximasReservas(dias);
+            _logger.LogInformation("Iniciando pagina principal"); //Se pueden registrar mensajes como este con los paquetes Serilog
             return View(proximasReservas);
         }
 

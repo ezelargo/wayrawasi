@@ -1,4 +1,4 @@
-﻿@model IEnumerable<WayraWasi.ViewModels.DisponibilidadViewModel>
+﻿@model IEnumerable<WayraWasi.Models.Cabania>
 
 @{
     ViewBag.Title = "Disponibilidad de Cabañas";
@@ -45,12 +45,9 @@
                 <thead>
                     <tr>
                         <th>Nombre</th>
-                        <th>Reservado por</th>
                         <th>Capacidad</th>
                         <th>Precio por Noche</th>
-                        <th>Precio Total</th>
                         <th>Disponibilidad</th>
-                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -58,21 +55,8 @@
                     {
                         <tr>
                             <td>@cabania.NombreCabania</td>
-                            <td>@cabania.ReservadoPor</td>
-                            <td>@cabania.CantidadPersonas</td>
-                            <td>@cabania.PrecioNoche.ToString("C")</td>
-                            @if (@cabania.PrecioTotal == 0)
-                            {
-                                <td>
-                                    No reservado
-                                </td>
-                            }
-                            else
-                            {
-                                <td>
-                                    @cabania.PrecioTotal.ToString("C")
-                                </td>
-                            }
+                            <td>@cabania.Capacidad</td>
+                            <td>$ @cabania.PrecioNoche</td>
                             <td>@cabania.Disponibilidad</td>
                         </tr>
                     }

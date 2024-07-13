@@ -17,7 +17,7 @@ namespace WayraWasi.Data.Implementations
         {
             using (var conexionD = _conexionDapper.GetConnection())
             {
-                return await conexionD.QueryFirstOrDefaultAsync<Cabania>("sp_BuscarCabaniaId",
+                return await conexionD.QuerySingleOrDefaultAsync<Cabania>("sp_BuscarCabaniaId",
                                                                           new { Id = id },
                                                                           commandType: CommandType.StoredProcedure);
             }
@@ -26,7 +26,7 @@ namespace WayraWasi.Data.Implementations
         {
             using (var conexionD = _conexionDapper.GetConnection())
             {
-                return await conexionD.QueryFirstOrDefaultAsync<Reserva>("sp_BuscarReservaAsignadaACabania",
+                return await conexionD.QuerySingleOrDefaultAsync<Reserva>("sp_BuscarReservaAsignadaACabania",
                                                                          new { Id = id },
                                                                          commandType: CommandType.StoredProcedure);
             }
@@ -35,7 +35,7 @@ namespace WayraWasi.Data.Implementations
         {
             using (var conexionD = _conexionDapper.GetConnection())
             {
-                return await conexionD.QueryFirstOrDefaultAsync<Cabania>("sp_BuscarCabaniaPorNombre",
+                return await conexionD.QuerySingleOrDefaultAsync<Cabania>("sp_BuscarCabaniaPorNombre",
                                                                           new { NombreCabania = nombre, Id = id },
                                                                           commandType: CommandType.StoredProcedure);
             }
