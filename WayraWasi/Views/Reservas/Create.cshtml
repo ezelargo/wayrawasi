@@ -3,7 +3,6 @@
     ViewBag.Title = "Crear Reservación";
     Cabania cabañaSeleccionada = ViewBag.CabaniaSeleccionada != null ? ViewBag.CabaniaSeleccionada : new Cabania();
     List<WayraWasi.Models.Cabania> cabañas = ViewBag.Cabanias ?? new List<WayraWasi.Models.Cabania>();
-    var fechaMinima = DateTime.Today.ToString("yyyy-MM-ddTHH:mm");
 }
 
 <!DOCTYPE html>
@@ -27,7 +26,7 @@
             <div class="form-horizontal">
                 <hr />
                 <div class="form-group">
-                    @Html.LabelFor(model => model.NombreCliente ,"Nombre", htmlAttributes: new { @class = "control-label col-md-2" })
+                    @Html.LabelFor(model => model.NombreCliente, "Nombre", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
                         @Html.EditorFor(model => model.NombreCliente, new { htmlAttributes = new { @class = "form-control" } })
                         @Html.ValidationMessageFor(model => model.NombreCliente, "", new { @class = "text-danger" })
@@ -37,7 +36,7 @@
                 <div class="form-group">
                     @Html.LabelFor(model => model.FechaEntrada, "Fecha de entrada", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
-                        @Html.EditorFor(model => model.FechaEntrada, new { htmlAttributes = new { @class = "form-control", type = "date", min = @fechaMinima } })
+                        @Html.EditorFor(model => model.FechaEntrada, new { htmlAttributes = new { @class = "form-control", type = "date" } })
                         @Html.ValidationMessageFor(model => model.FechaEntrada, "", new { @class = "text-danger" })
                     </div>
                 </div>
@@ -45,7 +44,7 @@
                 <div class="form-group">
                     @Html.LabelFor(model => model.FechaSalida, "Fecha de salida", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
-                        @Html.EditorFor(model => model.FechaSalida, new { htmlAttributes = new { @class = "form-control", type = "date", min = @fechaMinima } })
+                        @Html.EditorFor(model => model.FechaSalida, new { htmlAttributes = new { @class = "form-control", type = "date" } })
                         @Html.ValidationMessageFor(model => model.FechaSalida, "", new { @class = "text-danger" })
                     </div>
                 </div>
@@ -62,8 +61,8 @@
                     @Html.LabelFor(model => model.IdCabania, "Cabañas", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
                         <select id="IdCabania" name="IdCabania" class="form-control">
-                            <option value="">Seleccione una cabaña</option>
-                            @if (cabañaSeleccionada.NombreCabania != null)
+                            <option value="0">Seleccione una cabaña</option>
+                            @if (cabañaSeleccionada.IdCabania != 0)
                             {
                                 <option value="@cabañaSeleccionada.IdCabania" selected>@cabañaSeleccionada.NombreCabania</option>
                             }
@@ -71,7 +70,10 @@
                             {
                                 @foreach (var cabania in cabañas)
                                 {
-                                    <option value="@cabania.IdCabania">@cabania.NombreCabania</option>
+                                    @if (cabañaSeleccionada.IdCabania != @cabania.IdCabania)
+                                    {
+                                        <option value="@cabania.IdCabania">@cabania.NombreCabania</option>
+                                    }
                                 }
                             }
                             else

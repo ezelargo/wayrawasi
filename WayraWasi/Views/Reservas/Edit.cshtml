@@ -4,7 +4,6 @@
     List<WayraWasi.Models.Cabania> cabañas = ViewBag.Cabanias;
     List<string> estados = new List<string> { "Reservado", "Check-in finalizado", "Check-out finalizado" };
     Cabania cabañaSeleccionada = ViewBag.CabaniaSeleccionada;
-    var fechaMinima = DateTime.Today.ToString("yyyy-MM-ddTHH:mm");
 }
 
 <!DOCTYPE html>
@@ -40,7 +39,7 @@
                 <div class="form-group">
                     @Html.LabelFor(model => model.FechaEntrada, "Fecha de entrada", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
-                        @Html.EditorFor(model => model.FechaEntrada, new { htmlAttributes = new { @class = "form-control", type = "date", min = @fechaMinima } })
+                        @Html.EditorFor(model => model.FechaEntrada, new { htmlAttributes = new { @class = "form-control"} })
                         @Html.ValidationMessageFor(model => model.FechaEntrada, "", new { @class = "text-danger" })
                     </div>
                 </div>
@@ -48,7 +47,7 @@
                 <div class="form-group">
                     @Html.LabelFor(model => model.FechaSalida, "Fecha de salida", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
-                        @Html.EditorFor(model => model.FechaSalida, new { htmlAttributes = new { @class = "form-control", type = "date", min = @fechaMinima } })
+                        @Html.EditorFor(model => model.FechaSalida, new { htmlAttributes = new { @class = "form-control"} })
                         @Html.ValidationMessageFor(model => model.FechaSalida, "", new { @class = "text-danger" })
                     </div>
                 </div>
