@@ -22,13 +22,15 @@ namespace WayraWasi.Data.Implementations
                                                                           commandType: CommandType.StoredProcedure);
             }
         }
-        public async Task<Reserva> BuscarReservaAsignadaACabania(int id)
+        public async Task<bool> BuscarReservaAsignadaACabania(int id)
         {
             using (var conexionD = _conexionDapper.GetConnection())
             {
-                return await conexionD.QuerySingleOrDefaultAsync<Reserva>("sp_BuscarReservaAsignadaACabania",
+                var reserva = await conexionD.QueryAsync<Reserva>("sp_BuscarReservaAsignadaACabania",
                                                                          new { Id = id },
                                                                          commandType: CommandType.StoredProcedure);
+
+                return reserva.Any(); // Me devuelve si es si tiene o no algun resultado, en caso de no tenerlo se puede eliminar la cabaña ya que no tiene reservas activas
             }
         }
         public async Task<Cabania> BuscarPorNombre(string nombre, int id)
