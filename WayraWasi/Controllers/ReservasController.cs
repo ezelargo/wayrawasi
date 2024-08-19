@@ -30,8 +30,16 @@ namespace WayraWasi.Controllers
         // GET: ReservasController
         public async Task<ActionResult> Index()
         {
-            var reserva = await _repository.ListarTodos();
-            return View(reserva);
+            var reservas = await _repository.ListarTodos();
+
+            if (reservas.Any())
+            {
+                foreach (var reserva in reservas)
+                {
+                    await ActualizarEstadoReserva(reserva);
+                }
+            }            
+            return View(reservas);
         }
 
         // GET: ReservasController/Details/5

@@ -73,7 +73,7 @@ namespace WayraWasi.Data.Implementations
         {
             using (var conexionD = _conexionDapper.GetConnection())
             {
-                return await conexionD.ExecuteAsync("spActualizarReserva", new { reserva.Estado, reserva.IdReservacion }, commandType: CommandType.StoredProcedure);
+                return await conexionD.ExecuteAsync("spActualizarReserva", new { reserva.IdReservacion, reserva.Estado }, commandType: CommandType.StoredProcedure);
             }
         }
 

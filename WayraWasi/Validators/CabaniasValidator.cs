@@ -16,7 +16,7 @@ namespace WayraWasi.Validators
             {
                 RuleFor(c => c)
                 .Must(CabañaReservada)
-                .WithMessage("La cabaña se encuentra reservada. En caso de querer eliminarla primero elimine las reservas asignadas a la misma.");
+                .WithMessage("La cabaña se encuentra con reservas activas. En caso de querer eliminarla primero elimine las reservas asignadas a la misma.");
             });
 
             RuleFor(c => c.NombreCabania)
